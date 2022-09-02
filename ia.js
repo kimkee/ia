@@ -7,7 +7,7 @@ Element.prototype.appendHtml = function(str){
     var div = document.createElement("div");
     div.innerHTML = str;
     while (div.children.length > 0) {
-        console.log(div.children);
+        // console.log(div.children);
         this.appendChild( div.children[0] );
     }
 };
@@ -15,11 +15,25 @@ Element.prototype.prependHtml = function(str){
     var div = document.createElement("div");
     div.innerHTML = str;
     while (div.children.length > 0) {
-        console.log(div.children);
+        // console.log(div.children);
         this.prepend( div.children[0] );
     }
 };
-var ia = {
+Element.prototype.is = function(opt){
+    console.log(this);
+    if (opt == ":visible") {
+        return !!(  this.offsetWidth || this.offsetHeight || this.getClientRects().length );
+    }
+    if (opt == ":hidden") {
+        return !!!( this.offsetWidth || this.offsetHeight || this.getClientRects().length );
+    }
+    console.log(this , opt);
+};
+Element.prototype.hasClass = function(cls){
+    console.log(this , cls);
+    return !!( this.classList.contains(cls) );
+};
+const ia = {
     init:function(){
         this.stats();
         this.total.init();
@@ -31,11 +45,26 @@ var ia = {
         this.mact();
         this.memo.init();
         this.ly.init();
-        this.dev.init();
-        document.title = "IA-"+ia.plat().toUpperCase() || "ddd";
+        document.title = "IA-"+ia.plat().toUpperCase();    
     },
     update:function(){
         this.ly.set();
+    },
+    opts:{
+        usrs:[
+            "김기현","홍길동","미지정",
+        ],
+        stts:["대기","진행","검수","완료","삭제","우선"],
+        stxt:{ /* 상태값 class */
+            "대기": "sty", "": "sty",
+            "진행": "ing", "검수": "chk",
+            "완료": "com", "삭제": "del",
+            "우선": "wan",
+        },
+        label: { /* td라벨 */
+            numb: "NO", lev2: "Lv.2", lev3: "Lv.3", lev4: "Lv.4", lev5: "Lv.5",
+            tits: "화면", code: "ID", urls: "파일", date: "날짜", stat: "상태", name: "담당", memo: "메모",
+        },
     },
     data:{
         set:function(name,obj){
@@ -60,7 +89,7 @@ var ia = {
             } else {
                 return data;
             }
-        }
+        },
     },
     plat:function(){
         var path = location.pathname.split("/");
@@ -70,16 +99,6 @@ var ia = {
     stats:function(){
         const thtr = document.querySelectorAll(".ia-body table thead tr");
         const tbtr = document.querySelectorAll(".ia-body table tbody tr");
-        const stxt = {
-            "대기": "sty", "": "sty",
-            "진행": "ing", "검수": "chk",
-            "완료": "com", "삭제": "del",
-            "우선": "wan",
-        };
-        const label = {
-            no: "NO", lev2: "Lv.2", lev3: "Lv.3", lev4: "Lv.4", lev5: "Lv.5",
-            tits: "화면", code: "ID", urls: "파일", date: "날짜", stat: "상태", name: "담당", memo: "메모",
-        };
         tbtr.forEach( tr => {
             const stat = tr.querySelector("td.stat");
             const name = tr.querySelector("td.name");
@@ -87,11 +106,11 @@ var ia = {
             !txt ? stat.innerText = '대기':null;
             !name.innerText && tr.classList.add("none");
             !name.innerText ? name.innerText = "미지정" : null ;
-            tr.classList.add(stxt[txt]);
+            tr.classList.add(ia.opts.stxt[txt]);
             // console.log( txt , !!name.innerText );
             
             const link = tr.querySelector("td.urls a");
-            const href = link.getAttribute("href").includes("javascript:;") ? null : link.getAttribute("href").replace("../../html",".").replace("../../..",".") ;
+            const href = link.getAttribute("href").includes("javascript:;") ? null : link.getAttribute("href").replace("../../html",".");
             link.setAttribute("target","_blank");
             link.innerText =  href;
 
@@ -102,14 +121,13 @@ var ia = {
             });
 
             tr.addEventListener("click", e =>{
-                e.stopPropagation();
                 e.target.closest("tr").classList.toggle("active");
             });
 
             /* td에 data-label 넣기 */
-            Object.keys(label).forEach( k =>{
+            Object.keys(ia.opts.label).forEach( k =>{
                 // console.log(e,label[e]);
-                tr.querySelector("td."+k).setAttribute("data-label",label[k]);
+                tr.querySelector("td."+k).setAttribute("data-label",ia.opts.label[k]);
             });
         });
 
@@ -122,7 +140,7 @@ var ia = {
         
         thtr.forEach( tr => {
             // console.log(tr);
-            // el.appendHtml('<th class="no">No</th>');
+            // el.appendHtml('<th class="numb">No</th>');
         });
     },
     ly:{
@@ -131,16 +149,14 @@ var ia = {
             this.set();
         },
         evt:function(){
-            window.addEventListener("load", e =>   this.set() );
-            window.addEventListener("resize", e => this.set() );
-            window.addEventListener("scroll", e => this.set() );
+            window.addEventListener("load",   e => this.set());
+            window.addEventListener("resize", e => this.set());
+            window.addEventListener("scroll", e => this.set());
         },
         set:function(){
-            var hdHeight = document.querySelector(".ia-head").offsetHeight  || 0;
-            var nvHeight = document.querySelector(".ia-body .navs").offsetHeight || 0;
-            console.log(hdHeight , nvHeight);
-            
-            // $(".ia-wrap").css({"padding-top":hdHeight+"rem"});
+            const hdHeight = document.querySelector(".ia-head").offsetHeight  || 0;
+            const nvHeight = document.querySelector(".ia-body .navs").offsetHeight || 0;
+            // console.log(hdHeight , nvHeight);
             document.querySelector(".ia-wrap").style.paddingTop = hdHeight+"rem";
             document.querySelector(".ia-body").style.paddingTop = nvHeight+"rem";
             document.querySelector(".fixnav").style.top = hdHeight+nvHeight+7+"rem";
@@ -149,9 +165,9 @@ var ia = {
     },
     fixnav:{
         init:function(){
-            !$(".fixnav").length && $(".navs").append(this.els);
+            document.querySelector(".navs").appendHtml(this.els);
             this.evt();
-            var theme = ia.data.get("ia","theme"); //
+            const theme = ia.data.get("ia","theme"); //
             this.them(theme);
         },
         els:'<nav class="fixnav">'+
@@ -160,26 +176,11 @@ var ia = {
                 '<button type="button" class="bt top">▲</button>'+
             '</nav>',
         evt:function(){
-            var _this = this;
-            $(document).on("click", ".fixnav .bt.top", function(){
-                _this.gotop();
-            });
-            $(document).on("click", ".fixnav .bt.them", function(){
-                if( $("body").is(".is-dark") ){
-                    _this.them("light");
-                }else{
-                    _this.them("dark");
-                }
-            });
-            
+            document.querySelector(".fixnav .bt.top").addEventListener("click", e => this.gotop(e.target) );
+            document.querySelector(".fixnav .bt.them").addEventListener("click", e => ia.data.get("ia","theme") == "dark" ? this.them("light") : this.them("dark"));
         },
-        gotop:function(){
-            var els = $(this);
-            if (els.hasClass("disabled")) return false;
-            $("body,html").animate({ scrollTop: 0 }, 200, function() {
-                els.removeClass("disabled");
-            });
-            els.addClass("disabled");
+        gotop:function(el){
+            window.scrollTo(0, 0);
         },
         them:function(type){
             if (type == false) {
@@ -187,46 +188,40 @@ var ia = {
                 type = "dark";
             }
             if( type == "dark" ){
-                $("body").addClass("is-dark");
-                $(".fixnav .bt.them").text("🌚");
-                $('[name="theme-color"]').prop("content","#212121");
+                document.querySelector("body").classList.add("is-dark");
+                document.querySelector(".fixnav .bt.them").innerText = "🌚";
+                document.querySelector('[name="theme-color"]').setAttribute("content","#212121");
             }
             if( type == "light"){
-                $("body").removeClass("is-dark");
-                $(".fixnav .bt.them").text("🌞");
-                $('[name="theme-color"]').prop("content","#ffffff");
+                document.querySelector("body").classList.remove("is-dark");
+                document.querySelector(".fixnav .bt.them").innerText = "🌞";
+                document.querySelector('[name="theme-color"]').setAttribute("content","#ffffff");
             }
             // console.log(type);
             ia.data.set("ia",{theme:type}); // 
         }
     },
     loading:{ // 로딩중..
-        show: function (id) {
-            if (id) {
-                $("#"+id).prepend('<div class="ia-loading is-pg">'+
-                '<div class="box">'+
-                    '<em class="rt"><i></i><i></i></em>'+
-                '</div>'+
-            '</div>');
+        show: function () {
 
-
-            }else{
-                if( $(".ia-loading").length ) return;
-                var els = '<div class="ia-loading">'+
+            if( document.querySelector(".ia-loading") ) return;
+            
+            const els = 
+            '<div class="ia-loading">'+
                 '<div class="box">'+
                     '<em class="rt"><i></i><i></i></em>'+
                 '</div>'+
             '</div>';
-                $("body").prepend(els).addClass("is-loading");
-                
-            }
+             
+            document.querySelector("body").prependHtml(els);
+            document.querySelector("body").classList.add("is-loading");
+            
         },
-        hide: function (id) {
-            if (id) {
-                $("#"+id+" .ia-loading").remove();
-            }else{
-                $(".ia-loading").remove();
-                $("body").removeClass("is-loading");
+        hide: function () {
+            const loading = document.querySelector(".ia-loading");
+            if (loading) {
+                document.querySelector(".ia-loading").remove();
+                document.querySelector("body").classList.remove("is-loading");
             }
         }
     },
@@ -246,34 +241,32 @@ var ia = {
             '<ul class="info usr">'+
                 '<li><select class="fillter" title="작업자"><option>작업자</option></select></li>'+
                 '<li><select class="statter" title="상태"><option>상태</option></select></li>'+
-                '<li><label class="check"><input type="checkbox" name="tot" checked><i>전체<span class="tot">0</span></i></label></li>'+
-                '<li><label class="check"><input type="checkbox" name="sty" checked><i>대기<span class="sty">0</span></i></label></li>'+
-                '<li><label class="check"><input type="checkbox" name="ing" checked><i>진행<span class="ing">0</span></i></label></li>'+
-                '<li><label class="check"><input type="checkbox" name="chk" checked><i>검수<span class="chk">0</span></i></label></li>'+
-                '<li><label class="check"><input type="checkbox" name="com" checked><i>완료<span class="com">0</span></i></label></li>'+
-                '<li><label class="check"><input type="checkbox" name="del" checked><i>삭제<span class="del">0</span></i></label></li>'+
+                '<li><i>전체<span class="tot">0</span></i></li>'+
+                '<li><i>대기<span class="sty">0</span></i></li>'+
+                '<li><i>진행<span class="ing">0</span></i></li>'+
+                '<li><i>검수<span class="chk">0</span></i></li>'+
+                '<li><i>완료<span class="com">0</span></i></li>'+
+                '<li><i>삭제<span class="del">0</span></i></li>'+
                 '<li><em class="graph"><i class="bar"></i></em> <span class="pct">0</span></li>'+
             '</ul>';
-            $(".ia-head .data").html(html);
+            document.querySelector(".ia-head .data").innerHTML = html;
         },
         set:function(){
             ia.loading.show();
-            setTimeout(function(){
-                ia.loading.hide();
-            }, 400);
+            setTimeout( e => ia.loading.hide(), 400 );
             
-            var count = {
+            const count = {
                 tots:{
-                    tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, pct: 0
+                    tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, pct: 0,
                 },
                 user:{
-                    tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, pct: 0
+                    tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, pct: 0,
                 }
             };
             $(".ia-body table.tbl tbody tr:not(.nodata)").each(function(){
                 var $sts = $(this).find("td.stat");
                 var $txt = $sts.text();
-                // console.log($sts.is(":visible"));		
+                // console.log($sts.is(":visible"));
                 if( $(this).is(":visible") ){
                     count.user.tot++;
                     switch ($txt) {
@@ -322,7 +315,7 @@ var ia = {
 
             $(".ia-body table tbody tr:visible:not(.nodata)").each(function(i){
                 i++;
-                $(this).find("td.no").text(i);
+                $(this).find("td.numb").text(i);
             });
 
             $(".ia-body table.tbl tr.nodata").remove();	
@@ -350,8 +343,6 @@ var ia = {
             this.set();
             this.load();
         },
-        usrs:["김기현","홍길동","미지정"],
-        stts:["대기","진행","검수","완료","삭제","우선"],
         evt:function(){
             var _this = this;
             $(document).on("change",".ia-head .info select",function(e){
@@ -361,44 +352,15 @@ var ia = {
                 ia.data.set("ia-"+ia.plat(),{user:val1});
                 ia.data.set("ia-"+ia.plat(),{stat:val2});
             });
-            
-            $(document).on("change",".info>li .check input[name='tot']",function(e){
-                var els = $(this).attr("name");
-                var val = $(this).is(":checked");
-                if (val == true) {
-                    $(".info>li .check input[type='checkbox']").prop("checked",true);
-                }else{
-                    $(".info>li .check input[type='checkbox']").prop("checked",false);
-                }
-                
-            });
-            $(document).on("change",".ia-head .info>li .check input[type='checkbox']",function(e){
-                var els = $(this).attr("name");
-                var val = $(this).is(":checked");
-                var chkNum = $(".info>li .check input[type='checkbox']:not([name='tot']):checked").length;
-                if (chkNum>=5) {
-                    $(".info>li .check input[name='tot']").prop("checked",true);
-                }else{
-                    $(".info>li .check input[name='tot']").prop("checked",false);
-                }
-                if (chkNum == 0) {
-                    // $(".ia-head .info>li .check input[type='checkbox']").prop("checked",true);
-                }
-                _this.check(els,val);			
-            });
-        },
-        check:function(els,val){
-            console.log(els,val);
-            
         },
         set:function(){
             var _this = this;
-            for(var count = 0; count < _this.usrs.length; count++){                
-                var option = $("<option value="+_this.usrs[count]+">"+_this.usrs[count]+"</option>");
+            for(var count = 0; count < ia.opts.usrs.length; count++){                
+                var option = $("<option value="+ia.opts.usrs[count]+">"+ia.opts.usrs[count]+"</option>");
                 $(".fillter").append(option);
             }
-            for(var countB = 0; countB < _this.stts.length; countB++){                
-                var optionB = $("<option value="+_this.stts[countB]+">"+_this.stts[countB]+"</option>");
+            for(var countB = 0; countB < ia.opts.stts.length; countB++){                
+                var optionB = $("<option value="+ia.opts.stts[countB]+">"+ia.opts.stts[countB]+"</option>");
                 $(".statter").append(optionB);
             }
         },
@@ -443,7 +405,7 @@ var ia = {
                 }
                 // console.log( val1,name,stat );
             });
-            ia.total.set();		
+            ia.total.set();
         },
         stat:function(val){
             $(".ia-body table.tbl tr td.stat").each(function(i){
@@ -470,6 +432,8 @@ var ia = {
                 }
             });
             $(document).on("click","table.tbl th.memo .bt.more",function(e){
+                e.stopPropagation();
+                console.log("메모+");
                 if( $("table.tbl").is(".open") ){
                     $("table.tbl").removeClass("open");
                     $("table.tbl td.memo").removeClass("open");
@@ -602,181 +566,58 @@ var ia = {
             $(".ia-body .navs").append(navsHtml);
         }
     },
-    html:{ // Html 인클루드
-        incCom:false,
-        load:function( paramCallback ){
-            if( paramCallback ){
-                this.loadCallback = paramCallback;
-            }
+    include:{
+        init: function(){
+            this.set();
         },
-        include:function(){
-            var _this = this;
-            var $inchtml = $("include");
-            var incAmt = 0;
-            if ($inchtml.length) {
-                $inchtml.each(function(idx){
-                    var inc = $(this).attr("src");
-                    // console.log(inc);
-                    var incopt = $(this).data("include-opt");				
-                    var incNums = $inchtml.length ;
-                    $(this).load( inc ,function(response, status, xhr){
-                        // console.log( inc, idx+1 , incNums,  status, xhr);
-                        // console.log($(this));
-                        $(this).closest("dd").prev("dt").find(">a").attr("title",inc);
-                        // console.log(incopt);
-                        if( incopt && incopt.class ){
-                            // console.log(inc ,incopt);
-                            $(this).find(">*").addClass(incopt.class);
-                        }
-                        $(this).find(">*").unwrap();
-                        incAmt ++;
-                        if( status == "success" ){
-                            
-                        }else if( status == "error"){
-                            _this.incCom = false ;
-                            console.log("include 실패" , inc );
-                        }						
-                        if( incAmt == incNums ) {
-                            _this.incCom = true ;
-                            if( typeof _this.loadCallback == "function") _this.loadCallback();
-                        }
-                    
-                    });
+        load: function (paramCallback) {
+            this.loadCallback = paramCallback; 
+        },
+        set: function(){
+            const incd = document.querySelectorAll("include");
+            incd.length ? this.each(incd) : this.acti();
+        },
+        each: function(incd){ 
+            const _this = this;
+            const inum = incd.length;
+            let cout = 0;
+            incd.forEach( els => {
+                const url = els.getAttribute("src");
+                const opt = JSON.parse(els.getAttribute("data-include-opt")) || {};
+                const obj = {};
+                Object.keys(opt).forEach( k => obj[k.trim()] = opt[k].trim() );
+                _this.fetch = fetch(url)
+                .then( res => res.ok ? res.text() : null )
+                .then( res => { 
+                    cout++;
+                    els.innerHTML = res;
+                    console.log(url, obj, cout+"/"+inum);
+                    const elc = els.firstElementChild;
+                    /* attr */
+                    for(const key in obj){
+                        const sxt = ( key != "class" && key != "display" && elc ) ;
+                        sxt ? elc.setAttribute( key, obj[key] ) : null ;
+                    }
+                    /* display */
+                    elc && obj.display ? elc.style.display = obj.display : null;
+                    /* class */
+                    const cls = elc && obj.class ? obj.class.split(" ") : null;
+                    for(const c in cls) elc.classList.add( cls[c] );
+                    /* unwrap */
+                    els.replaceWith( ...els.childNodes );
+                    cout == inum ? _this.acti() : null;
                 });
-            }else{
-                _this.incCom = true ;
-                if ( typeof _this.loadCallback == "function") _this.loadCallback();
-            }
-            //console.log("완료" + _this.incCom);
-        }
-    },
-    dev:{
-        init:function(){
-            this.evt();
-        },
-        evt:function(){
-            var keyF4 = this.togDev;
-            var keyF2 = this.togUrl;
-            $(document).on("keydown mousedown", function (e) {
-                
-                if( e.keyCode == 77 && $("body:not('.link')").length ) { keyM();	} // M 키 이벤트
-                if( e.keyCode == 113 ) { keyF2(); } //F2 키 이벤트
-                if( e.keyCode == 118 ) { keyF7(); } //F7 키 이벤트
-                if( e.keyCode == 115 ) { keyF4(); } //F4 키 이벤트
-                if( e.keyCode == 8   ) { keyBack(); } //Back 키 이벤트
-            
-            }).on("mousedown", function () {
-                $(".link-html").remove();
             });
-
-            $(document).on("keydown mousedown", function (e) {
-                if( e.altKey ){
-                    console.log( e.keyCode  ,e.altKey);
-                    if( e.keyCode == 48 ) { location.href = "../guide/ia.html"; }
-                    if( e.keyCode == 49 ) { location.href = "../guide/ui1.html"; }
-                    if( e.keyCode == 50 ) { location.href = "../guide/ui2.html"; }
-                }
-            });
-            
-            $(document).on("keydown",".ia-body table.tbl td a:focus", function (e) {
-                var _this = this;
-                if( e.keyCode == 32 ) {
-                    var url = $(_this).attr("href");
-                    // console.log(url);
-                    $(_this).closest("tr").addClass("active");
-                    window.open(url);
-                    return false;
-                }
-            });
-            
         },
-        togUrl:function(){ // F2 키
-    
-            var tUrl = window.location.href;
-            var tPort = window.location.port;
-            var tHost = window.location.host;
-            var tName = window.location.hostname;
-            var tOrg = window.location.origin;
-            var tIp = window.location.hostname;
-            // console.log(tPort, tUrl , tName);
-            if(tPort == "9084" ||tPort == "9085" || tName == "localhost" || tName == "127.0.0.1"){
-                console.log(tUrl.replace(tHost,"tca.kyobo.co.kr"));
-                location.href = tUrl.replace(tHost,"tca.kyobo.co.kr").replace("/static/","/ui/");
-            }
-            if(tOrg == 'http://tca.kyobo.co.kr' || tOrg == 'http://10.27.225.22:9085'){
-                location.href = tUrl.replace(tOrg,"http://localhost:9085").replace("/ui/","/static/");
-            }
+        acti: function(){
+            this.comp = true;
+            this.call();
         },
-        togDev:function(){ // F4 키
-            var tUrl = window.location.href;
-            var tPort = window.location.port;
-            var tHost = window.location.host;
-            var tName = window.location.hostname;
-            var tOrg = window.location.origin;
-            var tIp = window.location.hostname;
-            // console.log(tPort, tUrl , tName);
-            if(tPort == "9085" ||tPort == "9084" || tName == "localhost" || tName == "127.0.0.1"){
-                console.log(tUrl.replace(tHost,"kyobo.devtree.co.kr"));
-                location.href = tUrl.replace(tHost,"kyobo.devtree.co.kr");
-            }
-            if(tOrg == 'http://kyobo.devtree.co.kr' || tOrg == 'http://10.27.225.22:9084'){
-                location.href = tUrl.replace(tOrg,"http://localhost:9085");
-            }
+        call: function(){
+            typeof this.loadCallback == "function" ? this.loadCallback(): null ;
         }
     }
 };
-$(document).ready(function(){
-    ia.loading.show();
-    ia.html.include();
-    ia.html.times = setInterval(function(){ // console.log("ia.html" ,  ia.html.incCom);
-        if( ia.html.incCom ){
-            clearInterval(ia.html.times);
-            ia.init();
-            console.log("ia.init();");
-        }
-    });
-});
 
-
-
-
-    //Created By: Brij Mohan
-    //Website: http://techbrij.com
-    // function groupTable($rows, startIndex, total) {
-    // 	if (total === 0) {
-    // 		return;
-    // 	}
-    // 	var i, currentIndex = startIndex,
-    // 		count = 1,
-    // 		lst = [];
-    // 	var tds = $rows.find('td:eq(' + currentIndex + ')');
-    // 	var ctrl = $(tds[0]);
-    // 	lst.push($rows[0]);
-    // 	for (i = 1; i <= tds.length; i++) {
-    // 		if ( $.trim( ctrl.text() )== $.trim( $(tds[i]).text() ) && $.trim( ctrl.text() ) !== '' ) {
-    // 			count++;
-    // 			$(tds[i]).addClass('deleted');
-    // 			lst.push($rows[i]);
-    // 		} else {
-    // 			if (count > 1) {
-    // 				ctrl.attr('rowspan', count);
-    // 				groupTable($(lst), startIndex + 1, total - 1);
-    // 			}
-    // 			count = 1;
-    // 			lst = [];
-    // 			ctrl = $(tds[i]);
-    // 			lst.push($rows[i]);
-    // 		}
-    // 	}
-    // }
-
-    // $('table').each(function (i) {
-    // 	groupTable($(this).find('tr:has(td)'), 0, 3);
-
-    // });
-    // $('table .deleted').remove();
-
-
-
-
-
+ia.include.set();
+ia.include.load( e => ia.init() );
