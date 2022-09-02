@@ -287,13 +287,15 @@ const ia = {
             this.load();
         },
         evt:function(){
-            var _this = this;
-            $(document).on("change",".ia-head .data select",function(e){
-                var val1 = $(".fillter").val();
-                var val2 = $(".statter").val();
-                _this.filt(val1, val2);
-                ia.data.set("ia-"+ia.plat(), {user: val1});
-                ia.data.set("ia-"+ia.plat(), {stat: val2});
+            const _this = this;
+            document.querySelectorAll(".ia-head .data select").forEach( select => {
+                select.addEventListener("change", e => {
+                    const val1 = document.querySelector(".fillter").value;
+                    const val2 = document.querySelector(".statter").value;
+                    this.filt(val1, val2);
+                    ia.data.set("ia-"+ia.plat(), {user: val1});
+                    ia.data.set("ia-"+ia.plat(), {stat: val2});
+                });
             });
         },
         set:function(){
