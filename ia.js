@@ -20,7 +20,7 @@ Element.prototype.prependHtml = function(str){
     }
 };
 Element.prototype.is = function(opt){
-    console.log(this);
+    // console.log(this);
     if (opt == ":visible") {
         return !!(  this.offsetWidth || this.offsetHeight || this.getClientRects().length );
     }
@@ -52,9 +52,11 @@ const ia = {
     },
     opts:{
         usrs:[
-            "김기현","홍길동","미지정",
+            "김기현","홍길동","김선생","미지정",
         ],
-        stts:["대기","진행","검수","완료","삭제","우선"],
+        stts:[
+            "대기","진행","검수","완료","삭제","우선",
+        ],
         stxt:{ /* 상태값 class */
             "대기": "sty", "": "sty",
             "진행": "ing", "검수": "chk",
@@ -97,7 +99,6 @@ const ia = {
         return path;
     },
     stats:function(){
-        const thtr = document.querySelectorAll(".ia-body table thead tr");
         const tbtr = document.querySelectorAll(".ia-body table tbody tr");
         tbtr.forEach( tr => {
             const stat = tr.querySelector("td.stat");
@@ -113,22 +114,17 @@ const ia = {
             const href = link.getAttribute("href").includes("javascript:;") ? null : link.getAttribute("href").replace("../../html",".");
             link.setAttribute("target","_blank");
             link.innerText =  href;
-
-
-            tr.querySelector("a").addEventListener("click", e =>{
+            link.addEventListener("click", e => {
                 e.stopPropagation();
                 e.target.closest("tr").classList.add("active");
             });
-
-            tr.addEventListener("click", e =>{
-                e.target.closest("tr").classList.toggle("active");
-            });
+            tr.addEventListener("click", e => {
+                // e.stopPropagation();
+                e.target != tr.querySelector("button") ? tr.classList.toggle("active") : null ;
+            } );
 
             /* td에 data-label 넣기 */
-            Object.keys(ia.opts.label).forEach( k =>{
-                // console.log(e,label[e]);
-                tr.querySelector("td."+k).setAttribute("data-label",ia.opts.label[k]);
-            });
+            Object.keys(ia.opts.label).forEach( k => tr.querySelector("td."+k).setAttribute("data-label",ia.opts.label[k]) );
         });
 
         const dtd = document.querySelectorAll(".ia-body .list>dt");
@@ -136,11 +132,6 @@ const ia = {
             i++;
             e.classList.add("tm"+i);
             e.nextElementSibling.classList.add("dd"+i);
-        });
-        
-        thtr.forEach( tr => {
-            // console.log(tr);
-            // el.appendHtml('<th class="numb">No</th>');
         });
     },
     ly:{
@@ -227,113 +218,65 @@ const ia = {
     },
     total:{
         init:function(){
-            this.set();
-            var html = 
-            '<ul class="info tot">'+
-                '<li>전체 <span class="tot">0</span></li>'+
-                '<li>대기 <span class="sty">0</span></li>'+
-                '<li>진행 <span class="ing">0</span></li>'+
-                '<li>검수 <span class="chk">0</span></li>'+
-                '<li>완료 <span class="com">0</span></li>'+
-                '<li>삭제 <span class="del">0</span></li>'+
-                '<li><em class="graph"><i class="bar"></i></em> <span class="pct">0</span></li>'+
-            '</ul>'+
-            '<ul class="info usr">'+
-                '<li><select class="fillter" title="작업자"><option>작업자</option></select></li>'+
-                '<li><select class="statter" title="상태"><option>상태</option></select></li>'+
-                '<li><i>전체<span class="tot">0</span></i></li>'+
-                '<li><i>대기<span class="sty">0</span></i></li>'+
-                '<li><i>진행<span class="ing">0</span></i></li>'+
-                '<li><i>검수<span class="chk">0</span></i></li>'+
-                '<li><i>완료<span class="com">0</span></i></li>'+
-                '<li><i>삭제<span class="del">0</span></i></li>'+
-                '<li><em class="graph"><i class="bar"></i></em> <span class="pct">0</span></li>'+
-            '</ul>';
-            document.querySelector(".ia-head .data").innerHTML = html;
+
         },
         set:function(){
             ia.loading.show();
             setTimeout( e => ia.loading.hide(), 400 );
             
             const count = {
-                tots:{
-                    tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, pct: 0,
-                },
-                user:{
-                    tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, pct: 0,
-                }
+                tots:{ tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, wan: 0, pct: 0 },
+                user:{ tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, wan: 0, pct: 0 }
             };
-            $(".ia-body table.tbl tbody tr:not(.nodata)").each(function(){
-                var $sts = $(this).find("td.stat");
-                var $txt = $sts.text();
-                // console.log($sts.is(":visible"));
-                if( $(this).is(":visible") ){
-                    count.user.tot++;
-                    switch ($txt) {
-                        case "대기": count.user.sty++; break;
-                        case "진행": count.user.ing++; break;
-                        case "검수": count.user.chk++; break;
-                        case "우선": count.user.ing++; break;
-                        case "완료": count.user.com++; break;
-                        case "삭제": count.user.del++; break;
-                    }
-                }
+            document.querySelectorAll(".ia-body table.tbl tbody tr:not(.nodata)").forEach( (tr,idx) => {
+                const sxt = tr.querySelector("td.stat");
+                const txt = sxt.innerText;
+                const ttt = ia.opts.stxt[txt];
+
                 count.tots.tot++;
-                switch ($txt) {
-                    case "대기": count.tots.sty++; break;
-                    case "진행": count.tots.ing++; break;
-                    case "검수": count.tots.chk++; break;
-                    case "우선": count.tots.ing++; break;
-                    case "완료": count.tots.com++; break;
-                    case "삭제": count.tots.del++; break;
+                count.tots[ttt]++;
+                if( tr.is(":visible") ){ 
+                    count.user.tot++;
+                    count.user[ttt]++;
                 }
+                
             });
+            Object.keys(count.user).forEach( k => document.querySelector(".info.usr ."+k).innerText = count.user[k] );
+            Object.keys(count.tots).forEach( k => document.querySelector(".info.tot ."+k).innerText = count.tots[k] );
 
-
-            $(".info.usr .sty").html(count.user.sty);
-            $(".info.usr .ing").html(count.user.ing);
-            $(".info.usr .chk").html(count.user.chk);
-            $(".info.usr .del").html(count.user.del);
-            $(".info.usr .com").html(count.user.com);
-            $(".info.usr .tot").html(count.user.tot);
             count.user.pct = (count.user.com + count.user.chk + count.user.del) / count.user.tot * 100 || 0;
-            $(".info.usr .pct").html( count.user.pct.toFixed(1)+"%");
-            $(".info.usr .graph .bar").css("width",count.user.pct.toFixed(1)+"%");
-            // console.log(count.user.pct.toFixed(1)+"%");
+            document.querySelector(".info.usr .pct").innerHTML =  count.user.pct.toFixed(1)+"%" ;
+            document.querySelector(".info.usr .graph .bar").style.width = count.user.pct.toFixed(1)+"%";
 
-
-            $(".info.tot .sty").html(count.tots.sty);
-            $(".info.tot .ing").html(count.tots.ing);
-            $(".info.tot .chk").html(count.tots.chk);
-            $(".info.tot .del").html(count.tots.del);
-            $(".info.tot .com").html(count.tots.com);
-            $(".info.tot .tot").html(count.tots.tot);
             count.tots.pct = (count.tots.com + count.tots.chk + count.tots.del) / count.tots.tot * 100 || 0;
-            $(".info.tot .pct").html( count.tots.pct.toFixed(1)+"%");
-            $(".info.tot .graph .bar").css("width",count.tots.pct.toFixed(1)+"%");
+            document.querySelector(".info.tot .pct").innerHTML = count.tots.pct.toFixed(1)+"%";
+            document.querySelector(".info.tot .graph .bar").style.width = count.tots.pct.toFixed(1)+"%";
 
-
-            $(".ia-body table tbody tr:visible:not(.nodata)").each(function(i){
-                i++;
-                $(this).find("td.numb").text(i);
+            let lnum = 0;
+            document.querySelectorAll(".ia-body table tbody").forEach(tbody => {
+                const nodata = tbody.querySelector("tr.nodata");
+                nodata ? nodata.remove() : null;
+                let vnum = 0;
+                tbody.querySelectorAll("tr").forEach( tr => {
+                    if( tr.is(":visible") ){
+                        vnum++;
+                        lnum++;
+                        tr.querySelector("td.numb").innerText = lnum;
+                    }
+                    tbody.setAttribute("trnum",vnum);
+                });
+                const notr = document.createElement("tr");
+                notr.innerHTML = '<td colspan="12">내역이 없습니다</td>';
+                notr.classList.add("nodata");
+                vnum < 1 ? tbody.appendChild(notr) : null ;
             });
 
-            $(".ia-body table.tbl tr.nodata").remove();	
-            $(".ia-body table.tbl tbody").each(function(){
-                var $tr = $(this).find(">tr:visible");
-                // console.log($tr.length);
-                if( $tr.length == 0 ){
-                    $(this).append('<tr class="nodata"><td colspan="12">내역이 없습니다</td></tr>');
-                }
-            });
-            
         },
         cate:function(){
-            $(".ia-body dd ").each(function(){
-                var trNum = $(this).find("table tbody tr:not(.nodata)").length;
-                // console.log(trNum);
-                // if( trNum <= 0 ) return;
-                $(this).prev("dt").find("a").attr("data-num",trNum);
+            document.querySelectorAll(".ia-body dd").forEach( dd => {
+                const trNum = dd.querySelectorAll("table tbody tr:not(.nodata)").length;
+                // console.log(trNum , dd.previousElementSibling );
+                dd.previousElementSibling.querySelector("a").setAttribute("data-num",trNum);
             });
         }
     },
@@ -345,12 +288,12 @@ const ia = {
         },
         evt:function(){
             var _this = this;
-            $(document).on("change",".ia-head .info select",function(e){
+            $(document).on("change",".ia-head .data select",function(e){
                 var val1 = $(".fillter").val();
                 var val2 = $(".statter").val();
                 _this.filt(val1, val2);
-                ia.data.set("ia-"+ia.plat(),{user:val1});
-                ia.data.set("ia-"+ia.plat(),{stat:val2});
+                ia.data.set("ia-"+ia.plat(), {user: val1});
+                ia.data.set("ia-"+ia.plat(), {stat: val2});
             });
         },
         set:function(){
@@ -425,6 +368,8 @@ const ia = {
         },
         evt:function(){
             $(document).on("click","table.tbl td.memo .bt.more",function(e){
+                e.preventDefault();
+                e.stopPropagation();
                 if( $(this).closest("td").is(".open") ){
                     $(this).closest("td").removeClass("open");
                 }else{
@@ -433,7 +378,7 @@ const ia = {
             });
             $(document).on("click","table.tbl th.memo .bt.more",function(e){
                 e.stopPropagation();
-                console.log("메모+");
+                // console.log("메모+");
                 if( $("table.tbl").is(".open") ){
                     $("table.tbl").removeClass("open");
                     $("table.tbl td.memo").removeClass("open");
@@ -469,7 +414,7 @@ const ia = {
         var active = {"static":"static", "mo":"mo", "pc":"pc", "admin":"admin"};
         // console.log(path ,active , active[path]);
         $(".ia-head .link>li."+active[path]).addClass("active");
-        console.log(ia.plat());
+        // console.log(ia.plat());
         ia.data.set("ia-"+ia.plat(),{plat:active[path]});
         $("body").addClass(active[path]);
         
@@ -591,7 +536,7 @@ const ia = {
                 .then( res => { 
                     cout++;
                     els.innerHTML = res;
-                    console.log(url, obj, cout+"/"+inum);
+                    // console.log(url, obj, cout+"/"+inum);
                     const elc = els.firstElementChild;
                     /* attr */
                     for(const key in obj){
