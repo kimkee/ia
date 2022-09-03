@@ -51,17 +51,15 @@ const ia = {
         this.ly.set();
     },
     opts:{
-        usrs:[
-            "김기현","홍길동","김선생","미지정",
+        usrs: [
+            "김기현", "홍길동", "김선생", "미지정",
         ],
-        stts:[
-            "대기","진행","검수","완료","삭제","우선",
+        stts: [
+            "대기", "진행", "검수", "완료", "삭제", "우선",
         ],
-        stxt:{ /* 상태값 class */
-            "대기": "sty", "": "sty",
-            "진행": "ing", "검수": "chk",
-            "완료": "com", "삭제": "del",
-            "우선": "wan",
+        stxt: { /* 상태값 class */
+            "대기": "sty", "진행": "ing", "검수": "chk",
+            "완료": "com", "삭제": "del", "우선": "wan",
         },
         label: { /* td라벨 */
             numb: "NO", lev2: "Lv.2", lev3: "Lv.3", lev4: "Lv.4", lev5: "Lv.5",
@@ -107,7 +105,7 @@ const ia = {
             !txt ? stat.innerText = '대기':null;
             !name.innerText && tr.classList.add("none");
             !name.innerText ? name.innerText = "미지정" : null ;
-            tr.classList.add(ia.opts.stxt[txt]);
+            tr.classList.add(ia.opts.stxt[txt]||'sty');
             // console.log( txt , !!name.innerText );
             
             const link = tr.querySelector("td.urls a");
@@ -133,6 +131,7 @@ const ia = {
             e.classList.add("tm"+i);
             e.nextElementSibling.classList.add("dd"+i);
         });
+        // console.log( "ia.stats();" );
     },
     ly:{
         init:function(){
@@ -199,8 +198,8 @@ const ia = {
             
             const els = 
             '<div class="ia-loading">'+
-                '<div class="box">'+
-                    '<em class="rt"><i></i><i></i></em>'+
+                '<div class="bx">'+
+                    '<em><i></i></em>'+
                 '</div>'+
             '</div>';
              
@@ -222,7 +221,7 @@ const ia = {
         },
         set:function(){
             ia.loading.show();
-            setTimeout( e => ia.loading.hide(), 400 );
+            setTimeout( e => ia.loading.hide(), 200 );
             
             const count = {
                 tots:{ tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, wan: 0, pct: 0 },
@@ -270,7 +269,7 @@ const ia = {
                 notr.classList.add("nodata");
                 vnum < 1 ? tbody.appendChild(notr) : null ;
             });
-
+            // console.log("ia.total.set();");
         },
         cate:function(){
             document.querySelectorAll(".ia-body dd").forEach( dd => {
@@ -299,28 +298,26 @@ const ia = {
             });
         },
         set:function(){
-            var _this = this;
-            for(var count = 0; count < ia.opts.usrs.length; count++){                
-                var option = $("<option value="+ia.opts.usrs[count]+">"+ia.opts.usrs[count]+"</option>");
-                $(".fillter").append(option);
-            }
-            for(var countB = 0; countB < ia.opts.stts.length; countB++){                
-                var optionB = $("<option value="+ia.opts.stts[countB]+">"+ia.opts.stts[countB]+"</option>");
-                $(".statter").append(optionB);
-            }
+            let optft = "<option>작업자</option>";
+            ia.opts.usrs.forEach( k => optft += '<option value="'+k+'">'+k+'</option>' );
+            document.querySelector(".fillter").innerHTML = optft;
+
+            let optst = "<option>상태</option>";
+            Object.keys(ia.opts.stxt).forEach( k => optst += '<option value="'+k+'">'+k+'</option>' );
+            document.querySelector(".statter").innerHTML = optst;
         },
         load:function(){
-            var usract1 = ia.data.get("ia-"+ia.plat(),"user") || "작업자" ;
-            var usract2 = ia.data.get("ia-"+ia.plat(),"stat") || "상태";
-            this.filt(usract1,usract2);
-            $(".fillter option[value="+usract1+"] ").prop("selected",true);
-            $(".statter option[value="+usract2+"] ").prop("selected",true);
+            const opt1 = ia.data.get("ia-"+ia.plat(),"user") || "작업자" ;
+            const opt2 = ia.data.get("ia-"+ia.plat(),"stat") || "상태";
+            this.filt(opt1,opt2);
+            document.querySelector(".fillter").value = opt1;
+            document.querySelector(".statter").value = opt2;
         },
         filt:function(val1,val2){
             // console.log( val1,val2 );
             
             
-            $(".ia-body table.tbl tbody tr").hide();
+            // $(".ia-body table.tbl tbody tr").hide();
             $(".ia-body table.tbl tbody tr").each(function(i){
                 var name = $(this).find("td.name").text();
                 var stat = $(this).find("td.stat").text();
@@ -358,7 +355,7 @@ const ia = {
                 if (txt == "") {
                     // $(this).text("대기");
                     txt = "대기";
-                    // console.log(txt);
+                    console.log(txt);
                 }
             });
         }
