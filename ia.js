@@ -272,6 +272,7 @@ const ia = {
             // console.log("ia.total.set();");
         },
         cate:function(){
+            // console.log("ia.total.cate();");
             document.querySelectorAll(".ia-body dd").forEach( dd => {
                 const trNum = dd.querySelectorAll("table tbody tr:not(.nodata)").length;
                 // console.log(trNum , dd.previousElementSibling );
@@ -298,72 +299,51 @@ const ia = {
             });
         },
         set:function(){
-            let optft = "<option>작업자</option>";
+            let optft = '<option value="all">작업자</option>';
             ia.opts.usrs.forEach( k => optft += '<option value="'+k+'">'+k+'</option>' );
             document.querySelector(".fillter").innerHTML = optft;
 
-            let optst = "<option>상태</option>";
+            let optst = '<option value="all">상태</option>';
             Object.keys(ia.opts.stxt).forEach( k => optst += '<option value="'+k+'">'+k+'</option>' );
             document.querySelector(".statter").innerHTML = optst;
         },
         load:function(){
-            const opt1 = ia.data.get("ia-"+ia.plat(),"user") || "작업자" ;
-            const opt2 = ia.data.get("ia-"+ia.plat(),"stat") || "상태";
+            const opt1 = ia.data.get("ia-"+ia.plat(),"user") || "all" ;
+            const opt2 = ia.data.get("ia-"+ia.plat(),"stat") || "all";
             this.filt(opt1,opt2);
             document.querySelector(".fillter").value = opt1;
             document.querySelector(".statter").value = opt2;
         },
-        filt:function(val1,val2){
-            // console.log( val1,val2 );
-            
-            
-            // $(".ia-body table.tbl tbody tr").hide();
-            $(".ia-body table.tbl tbody tr").each(function(i){
-                var name = $(this).find("td.name").text();
-                var stat = $(this).find("td.stat").text();
-                if (name == "") {
-                    // $(this).find("td.name").html("미지정");
-                    name = "미지정";
-                    // console.log(name);
-                }
-
-                if( val1 == "담당자" ) {
-                    val1 = "작업자" ;
-                }
-                
-                if( val1 == name && val2 == stat ){
-                    $(this).show();
+        filt:function(opt1,opt2){
+            document.querySelectorAll(".ia-body table.tbl tbody tr").forEach( tr => {
+                const tname = tr.querySelector("td.name");
+                const tstat = tr.querySelector("td.stat");
+                const name = tname ? tname.innerText : null ;
+                const stat = tstat ? tstat.innerText : null ;
+              
+                if( opt1 == name && opt2 == stat ){
+                    tr.style.display = "table-row";
                 }else{
-                    $(this).hide();
+                    tr.style.display = "none";
                 }
-                if( val1 == "작업자" && val2 == stat ){
-                    $(this).show();
+                if( opt1 == "all" && opt2 == stat ){
+                    tr.style.display = "table-row";
                 }
-                if( val1 == name && val2 == "상태" ){
-                    $(this).show();
+                if( opt1 == name && opt2 == "all" ){
+                    tr.style.display = "table-row";
                 }
-                if( val1 == "작업자" && val2 == "상태" ){
-                    $(this).show();
+                if( opt1 == "all" && opt2 == "all" ){
+                    tr.style.display = "table-row";
                 }
-                // console.log( val1,name,stat );
+                // console.log( opt1,opt2,name,stat   , tr.style.display);
             });
             ia.total.set();
-        },
-        stat:function(val){
-            $(".ia-body table.tbl tr td.stat").each(function(i){
-                var txt = $(this).text();
-                if (txt == "") {
-                    // $(this).text("대기");
-                    txt = "대기";
-                    console.log(txt);
-                }
-            });
         }
     },
     memo:{
         init:function(){
-            this.evt();
             this.set();
+            this.evt();
         },
         evt:function(){
             $(document).on("click","table.tbl td.memo .bt.more",function(e){
