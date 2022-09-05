@@ -383,7 +383,7 @@ const ia = {
         path = "static";
         const active = {"static":"static", "mo":"mo", "pc":"pc", "admin":"admin"};
         // console.log(path ,active , active[path]);
-        console.log(ia.plat() , active[path]);
+        
         const liact = document.querySelector(".ia-head .link>li."+active[path]);
         liact && liact.classList.add("active");
         ia.data.set("ia-"+ia.plat(),{plat:active[path]});
@@ -405,24 +405,26 @@ const ia = {
         },
         evt:function(){
             var _this = this;
-            $(document).on("click",".fixnav .bt.viewall",function() {
-                if( $(".ia-body").is(".all") ){
-                    _this.set("close");
-                }else{
-                    _this.set("open");
-                }
+            
+            document.querySelector(".fixnav .bt.viewall").addEventListener("click", bt => {
+                const isAll = document.querySelector(".ia-body").classList.contains("all");
+                isAll ? _this.set("close") : _this.set("open");
             });
         },
         set:function(opt){
+            const body = document.querySelector(".ia-body");
+            const vbtn = document.querySelector(".fixnav .bt.viewall");
             if(opt=="open"){
-                $(".ia-body").addClass("all");
-                $(".fixnav .bt.viewall").text("메뉴닫기");
-                // localStorage.setItem("iaMenuSet",0);
+                body.classList.add("all");
+                vbtn.innerText = "메뉴닫기";
                 ia.data.set("ia-"+ia.plat(),{menu:0});
+                
             }else{
-                $(".ia-body").removeClass("all");
-                $(".fixnav .bt.viewall").text("전체보기");
-                $(".navs .menu>li:nth-child(1) a").trigger("click");
+                body.classList.remove("all");
+                vbtn.innerText = "전체보기";
+                const act =  document.querySelectorAll(".ia-body .navs .menu>li.active").length;
+                // console.log("act  "+act);
+                act == 0 ? ia.menu.act(1) : null ;
             }
             ia.total.set();
             ia.update();
@@ -430,53 +432,47 @@ const ia = {
     },
     menu:{
         init:function(){
-            this.evt();
             this.set();
+            this.evt();
         },
         evt:function(){
             var _this = this;
-            $(document).on("click",".ia-body .list>dt a",function () {
-                var idx = parseInt( $(this).closest("dt").attr("class").replace("tm","") );
-                ia.veiwall.set("close");
-                $(".navs .menu>li:nth-child("+idx+") a").trigger("click");
-            });
-            $(document).on("click",".navs .menu>li a",function () {
-                            
-                var idx = parseInt( $(this).closest("li").index()+1 );
-                _this.act(idx);
-            });
-            $(document).on("change",".navs .selt",function () {
-                var idx = $(this).val();
-                _this.act(idx);
-            });
+            document.querySelectorAll(".ia-body .list>dt a").forEach( (bt,i) => {
+                i++;
+                bt.setAttribute("onclick","ia.menu.act("+ i +")");
+                bt.addEventListener("click", a => ia.veiwall.set("close"));
+            } );
+            document.querySelectorAll(".navs .menu>li a").forEach( (bt,i) => bt.addEventListener("click", a => this.act( i+1 ) ) );
+            document.querySelector(".navs .selt").addEventListener("change", sel => this.act(sel.target.value) );
         },
         act:function(idx){
             // console.log(idx);
-            $(".ia-body").removeClass("all");
-            $(".navs .menu li:nth-child("+idx+")").addClass("active").siblings("li").removeClass("active");	
-            $(".navs .selt option[value="+idx+"] ").prop("selected",true);
-            // console.log(idx);
-            $(".ia-body .list .tm"+idx+"").addClass("active").siblings("dt").removeClass("active");
-            $(".ia-body .list .dd"+idx+"").addClass("active").siblings("dd").removeClass("active");
-
-            // localStorage.setItem("iaMenuSet",idx);
+            document.querySelector(".ia-body").classList.remove("all");
+            document.querySelectorAll(".navs .menu li").forEach( (li,i) => {
+                idx == i+1 ? li.classList.add("active") : li.classList.remove("active");
+            });
+            document.querySelector(".navs .selt option[value='"+idx+"']").selected = true;
+            document.querySelectorAll(".ia-body .list dt").forEach( (dt,i) => {
+                const dd = dt.nextElementSibling;
+                idx == i+1 ? dt.classList.add("active") : dt.classList.remove("active");
+                idx == i+1 ? dd.classList.add("active") : dd.classList.remove("active");
+            });
             ia.data.set("ia-"+ia.plat(),{menu:idx});
             ia.total.set();
         },
         set:function(){
-            var menu = "";
-            var selt = "";
-            $(".ia-body .list>dt").each(function(idx){
+            let menu = "";
+            let selt = "";
+            document.querySelectorAll(".ia-body .list>dt").forEach( (dt,idx) => {
                 idx++;
-                var count = $(this).find("a[data-num]").attr("data-num");
+                let count = dt.querySelector("a[data-num]").getAttribute("data-num");
                 count > 0 ? count = ' ['+count+']' : count = '';
-                menu += '<li>'+$(this).html()+'</li>';
-                selt += '<option value="'+idx+'">'+$(this).find("a").text()+''+count+'</option>';
+                menu += '<li>'+dt.innerHTML+'</li>';
+                selt += '<option value="'+idx+'">'+dt.querySelector("a").innerText+''+count+'</option>';
             });
-            // console.log(selt);
-            // console.log(menu);
-            var navsHtml = '<ul class="menu">'+menu+'</ul><select class="selt" title="카테고리선택">'+selt+'</select>';
-            $(".ia-body .navs").append(navsHtml);
+            // console.log(selt,menu);
+            const navsHtml = '<ul class="menu">'+menu+'</ul><select class="selt" title="카테고리선택">'+selt+'</select>';
+            document.querySelector(".ia-body .navs").innerHTML = navsHtml;
         }
     },
     include:{

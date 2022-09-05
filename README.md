@@ -1,16 +1,13 @@
 # ia
-PROJECT IA
+Project's  HTML Working List 
 
-Now converting jQuery version to pure javascript
+converting jQuery version to pure javascript
 
 
 ###  설정 [ia.opts]
 ```js
 usrs: [  //  작업자
-	"김기현", "홍길동", "김선생", "박진상", "이미나", "미지정",
-],
-stts: [  // 상태값
-	"대기", "진행", "검수", "완료", "삭제", "우선",
+	"김기현", "홍길동", "김선생", "박진상", "이과장", "미지정",
 ],
 stxt: { /* 상태값에 class */
 	"대기": "sty",
