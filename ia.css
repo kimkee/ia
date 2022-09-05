@@ -235,6 +235,7 @@ body.pc .ia-head .link>li.active .lk{background: #1065a5;}
 .ia-body table.tbl td.memo.more{padding-left: 29rem;}
 .ia-body table.tbl .memo .bt.more{width: 13rem;height: 13rem;border: 1rem solid #cacaca;position: absolute;left: 8rem;top: 50%;margin: -7rem 0rem 0rem 0rem;font-size:0;line-height: 1;padding: 0;border-radius: 2rem;color: #444;}
 .ia-body table.tbl th.memo .bt.more{top: 12rem;}
+.ia-body table.tbl.open .memo .bt.more::before{content: "-";top: -1rem;}
 .ia-body table.tbl .memo .bt.more::before{content:"+";font-size: 11rem;line-height: 1;position: absolute;left: 0rem;top: 0rem;width: 100%;text-align: center;}
 .ia-body table.tbl .memo.more p{display: none;overflow: hidden;text-overflow: ellipsis;width: 100%;padding: 0rem 0rem;border-top-width: 0rem;}
 .ia-body table.tbl .memo.more p+p{ padding: 0rem 0rem;}
@@ -244,7 +245,6 @@ body.pc .ia-head .link>li.active .lk{background: #1065a5;}
 .ia-body table.tbl .memo.open p+p{border-top: #efefef solid 1rem;white-space: normal;padding: 5rem 0rem 4rem 0rem;}
 .ia-body table.tbl .memo.open .bt.more{top: 15rem;}
 .ia-body table.tbl .memo.open .bt.more::before{content: "-";font-size: 11rem;line-height: 1;height: 12rem;overflow: hidden;position: absolute;left: 0rem;top: -1rem;width: 100%;/* background: #ffffff; */}
-.ia-body table.tbl.open .memo .bt.more::before{content: "-";top: -1rem;}
 .ia-body table.tbl tr.active {background: #dff1ff;}
 
 

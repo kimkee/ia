@@ -346,73 +346,62 @@ const ia = {
             this.evt();
         },
         evt:function(){
-            $(document).on("click","table.tbl td.memo .bt.more",function(e){
-                e.preventDefault();
-                e.stopPropagation();
-                if( $(this).closest("td").is(".open") ){
-                    $(this).closest("td").removeClass("open");
-                }else{
-                    $(this).closest("td").addClass("open");
-                }
-            });
-            $(document).on("click","table.tbl th.memo .bt.more",function(e){
-                e.stopPropagation();
-                // console.log("메모+");
-                if( $("table.tbl").is(".open") ){
-                    $("table.tbl").removeClass("open");
-                    $("table.tbl td.memo").removeClass("open");
-
-                }else{
-                    $("table.tbl").addClass("open");
-                    $("table.tbl td.memo").addClass("open");
-                }
-            });
+            document.querySelectorAll("table.tbl td.memo .bt.more").forEach( el => el.addEventListener("click", bt => {
+                const td = bt.target.closest("td").classList;
+                td.contains("open") ? td.remove("open") : td.add("open");
+            }));
+            
+            document.querySelectorAll("table.tbl th.memo .bt.more").forEach( el => el.addEventListener("click", bt => {
+                document.querySelectorAll("table.tbl").forEach( tbl => {
+                    if( tbl.classList.contains("open") ) {
+                        tbl.classList.remove("open");
+                        tbl.querySelectorAll("td.memo").forEach( memo => memo.classList.remove("open"));
+                    }else{
+                        tbl.classList.add("open");
+                        tbl.querySelectorAll("td.memo").forEach( memo => memo.classList.add("open"));
+                    }
+                });
+            }));
         },
         set:function(){
-            $(".ia-body table.tbl .memo").each(function(){
-                $(this).wrapInner('<div class="msgs"></div>');
-                var msg = $(this).find(".msgs>p");
-                // console.log(msg.length);
-                if (msg.length >= 2) {
-                    $(this).addClass("more");
-                    !$(this).find(".bt.more").length && $(this).prepend('<button class="bt more" type="button">+</button>');
+            document.querySelectorAll(".ia-body table.tbl .memo").forEach( memo => {
+                const msgs = '<div class="msgs">'+ memo.innerHTML +'</div>';
+                const mnum = memo.querySelectorAll("p").length;
+                if (mnum >= 2 || memo.tagName == "TH") {
+                    memo.classList.add("more");
+                    memo.innerHTML  = '<button class="bt more" type="button">+</button>'+ msgs;
                 }else{
-                    $(this).removeClass("more");
+                    memo.classList.remove("more");
+                    memo.innerHTML  = msgs;
                 }
-            });
-            $(".ia-body table.tbl th.memo").each(function(){
-                $(".ia-body table.tbl").addClass("close more");
-                !$(this).find(".bt.more").length && $(this).prepend('<button class="bt more" type="button">+</button>');
             });
         }
     },
     mact:function(num){
         // num = JSON.parse( localStorage.getItem("iaMenuSet") )  ;
-        var path = location.pathname.split("/");
+        let path = location.pathname.split("/");
         path = "static";
-        var active = {"static":"static", "mo":"mo", "pc":"pc", "admin":"admin"};
+        const active = {"static":"static", "mo":"mo", "pc":"pc", "admin":"admin"};
         // console.log(path ,active , active[path]);
-        $(".ia-head .link>li."+active[path]).addClass("active");
-        // console.log(ia.plat());
+        console.log(ia.plat() , active[path]);
+        const liact = document.querySelector(".ia-head .link>li."+active[path]);
+        liact && liact.classList.add("active");
         ia.data.set("ia-"+ia.plat(),{plat:active[path]});
-        $("body").addClass(active[path]);
-        
+        document.querySelector("body").classList.add(active[path]);
         
         num = ia.data.get("ia-"+ia.plat(),"menu") ;
-        // console.log(num);
+
         if( num == 0 ) {
             ia.veiwall.set("open");
         } else {
             if( !num ) {num = 1;} 
-            $("body."+active[path]+" .ia-body .list>dt.tm"+num+" a").trigger("click");
-            $("body."+active[path]+" .navs .menu>li:nth-child("+num+") a").trigger("click");
+            document.querySelector("body."+active[path]+" .ia-body .list>dt.tm"+num+" a").click();
+            document.querySelector("body."+active[path]+" .navs .menu>li:nth-child("+num+") a").click();
         }
-
     },
     veiwall:{
         init:function(){
             this.evt();
-            
         },
         evt:function(){
             var _this = this;
@@ -430,7 +419,7 @@ const ia = {
                 $(".fixnav .bt.viewall").text("메뉴닫기");
                 // localStorage.setItem("iaMenuSet",0);
                 ia.data.set("ia-"+ia.plat(),{menu:0});
-            }else{				
+            }else{
                 $(".ia-body").removeClass("all");
                 $(".fixnav .bt.viewall").text("전체보기");
                 $(".navs .menu>li:nth-child(1) a").trigger("click");
