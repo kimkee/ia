@@ -192,14 +192,15 @@ const ia = {
                 tots: { tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, wan: 0, pct: 0 },
                 user: { tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, wan: 0, pct: 0 }
             };
-            document.querySelectorAll(".ia-body table.tbl tbody tr:not(.nodata)").forEach( (tr,idx) => {
+            document.querySelectorAll(".ia-body  table.tbl tbody tr:not(.nodata)").forEach( (tr,idx) => {
                 const sxt = tr.querySelector("td.stat");
                 const txt = sxt.innerText;
                 const ttt = ia.opts.stxt[txt];
 
                 count.tots.tot++;
                 count.tots[ttt]++;
-                if( tr.is(":visible") ){ 
+                // if( tr.is(":visible") ){ 
+                if( tr.style.display == "table-row"  ){ 
                     count.user.tot++;
                     count.user[ttt]++;
                 }
@@ -217,13 +218,12 @@ const ia = {
             document.querySelector(".info.tot .graph .bar").style.width = count.tots.pct.toFixed(1)+"%";
 
             let lnum = 0;
-            document.querySelectorAll(".ia-body table tbody").forEach(tbody => {
+            document.querySelectorAll(".ia-body dd.show table tbody").forEach(tbody => {
                 const nodata = tbody.querySelector("tr.nodata");
                 nodata && nodata.remove();
                 let vnum = 0;
-                console.log(tbody.querySelectorAll("tr.sty,tr.ing,tr.com").length);
                 tbody.querySelectorAll("tr").forEach( tr => {
-                    if( tr.is(":visible") ){
+                    if( (tr.style.display == "table-row") ){
                         vnum++;
                         lnum++;
                         tr.querySelector("td.numb").innerText = lnum;
@@ -384,12 +384,11 @@ const ia = {
                 body.classList.add("all");
                 vbtn.innerText = "메뉴닫기";
                 ia.data.set("ia-"+ia.plat(),{menu:0});
-                
+                document.querySelectorAll(".list dd").forEach( dd => dd.classList.add("show") );                
             }else{
                 body.classList.remove("all");
                 vbtn.innerText = "전체보기";
                 const act =  document.querySelectorAll(".ia-body .navs .menu>li.active").length;
-                // console.log("act  "+act);
                 act == 0 && ia.menu.act(1) ;
             }
             ia.total.set();
@@ -421,7 +420,7 @@ const ia = {
             document.querySelectorAll(".ia-body .list dt").forEach( (dt,i) => {
                 const dd = dt.nextElementSibling;
                 idx == i+1 ? dt.classList.add("active") : dt.classList.remove("active");
-                idx == i+1 ? dd.classList.add("active") : dd.classList.remove("active");
+                idx == i+1 ? dd.classList.add("active","show") : dd.classList.remove("active","show");
             });
             ia.data.set("ia-"+ia.plat(),{menu:idx});
             ia.total.set();
