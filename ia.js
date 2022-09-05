@@ -3,38 +3,9 @@
 // 김기현 : kimkee@naver.com
 // update : 2022-09-01 ~
 //*******************************************//
-Element.prototype.appendHtml = function(str){
-    var div = document.createElement("div");
-    div.innerHTML = str;
-    while (div.children.length > 0) {
-        // console.log(div.children);
-        this.appendChild( div.children[0] );
-    }
-};
-Element.prototype.prependHtml = function(str){
-    var div = document.createElement("div");
-    div.innerHTML = str;
-    while (div.children.length > 0) {
-        // console.log(div.children);
-        this.prepend( div.children[0] );
-    }
-};
-Element.prototype.is = function(opt){
-    // console.log(this);
-    if (opt == ":visible") {
-        return !!(  this.offsetWidth || this.offsetHeight || this.getClientRects().length );
-    }
-    if (opt == ":hidden") {
-        return !!!( this.offsetWidth || this.offsetHeight || this.getClientRects().length );
-    }
-    console.log(this , opt);
-};
-Element.prototype.hasClass = function(cls){
-    console.log(this , cls);
-    return !!( this.classList.contains(cls) );
-};
+
 const ia = {
-    init:function(){
+    init: function(){
         this.stats();
         this.total.init();
         this.total.cate();
@@ -45,17 +16,14 @@ const ia = {
         this.mact();
         this.memo.init();
         this.ly.init();
-        document.title = "IA-"+ia.plat().toUpperCase();    
+        document.title = "IA-"+ia.plat().toUpperCase();
     },
-    update:function(){
+    update: function(){
         this.ly.set();
     },
-    opts:{
+    opts: {
         usrs: [
             "김기현", "홍길동", "김선생", "미지정",
-        ],
-        stts: [
-            "대기", "진행", "검수", "완료", "삭제", "우선",
         ],
         stxt: { /* 상태값 class */
             "대기": "sty", "진행": "ing", "검수": "chk",
@@ -66,37 +34,34 @@ const ia = {
             tits: "화면", code: "ID", urls: "파일", date: "날짜", stat: "상태", name: "담당", memo: "메모",
         },
     },
-    data:{
-        set:function(name,obj){
+    data: {
+        set: function(name,obj){
             var orgs = JSON.parse( localStorage.getItem(name) ) || {};
             var news = obj;
-            // news[key] = val;
             if (typeof obj == "object") {
-                // news = $.extend(orgs,news);
                 news = Object.assign(orgs,news);
             }
             localStorage.setItem(name, JSON.stringify(news) );
         },
-        get:function(name,key){
-            // console.log(key);
+        get: function(name,key){ // console.log(key);
             var data = JSON.parse( localStorage.getItem(name) );
             if (key != undefined) {
-                try {
+                try{
                     return data[key];
-                } catch (e) {
+                }catch(e) {
                     return false;
                 }
-            } else {
+            }else{
                 return data;
             }
         },
     },
-    plat:function(){
+    plat: function(){
         var path = location.pathname.split("/");
         path = "static";
         return path;
     },
-    stats:function(){
+    stats: function(){
         const tbtr = document.querySelectorAll(".ia-body table tbody tr");
         tbtr.forEach( tr => {
             const stat = tr.querySelector("td.stat");
@@ -131,19 +96,19 @@ const ia = {
             e.classList.add("tm"+i);
             e.nextElementSibling.classList.add("dd"+i);
         });
-        // console.log( "ia.stats();" );
+        console.log( "ia.stats();" );
     },
-    ly:{
-        init:function(){
+    ly: {
+        init: function(){
             this.evt();
             this.set();
         },
-        evt:function(){
+        evt: function(){
             window.addEventListener("load",   e => this.set());
             window.addEventListener("resize", e => this.set());
             window.addEventListener("scroll", e => this.set());
         },
-        set:function(){
+        set: function(){
             const hdHeight = document.querySelector(".ia-head").offsetHeight  || 0;
             const nvHeight = document.querySelector(".ia-body .navs").offsetHeight || 0;
             // console.log(hdHeight , nvHeight);
@@ -153,8 +118,8 @@ const ia = {
             document.querySelector(".ia-body .navs").style.top = hdHeight+"rem";
         }
     },
-    fixnav:{
-        init:function(){
+    fixnav: {
+        init: function(){
             document.querySelector(".navs").appendHtml(this.els);
             this.evt();
             const theme = ia.data.get("ia","theme"); //
@@ -165,14 +130,14 @@ const ia = {
                 '<button type="button" class="bt them">🌚</button>'+
                 '<button type="button" class="bt top">▲</button>'+
             '</nav>',
-        evt:function(){
+        evt: function(){
             document.querySelector(".fixnav .bt.top").addEventListener("click", e => this.gotop(e.target) );
             document.querySelector(".fixnav .bt.them").addEventListener("click", e => ia.data.get("ia","theme") == "dark" ? this.them("light") : this.them("dark"));
         },
-        gotop:function(el){
+        gotop: function(el){
             window.scrollTo(0, 0);
         },
-        them:function(type){
+        them: function(type){
             if (type == false) {
                 // window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ?  type = "light" :  type = "dark";
                 type = "dark";
@@ -191,7 +156,7 @@ const ia = {
             ia.data.set("ia",{theme:type}); // 
         }
     },
-    loading:{ // 로딩중..
+    loading: { // 로딩중..
         show: function () {
 
             if( document.querySelector(".ia-loading") ) return;
@@ -215,17 +180,17 @@ const ia = {
             }
         }
     },
-    total:{
-        init:function(){
+    total: {
+        init: function(){
 
         },
-        set:function(){
+        set: function(){
             ia.loading.show();
             setTimeout( e => ia.loading.hide(), 200 );
             
             const count = {
-                tots:{ tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, wan: 0, pct: 0 },
-                user:{ tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, wan: 0, pct: 0 }
+                tots: { tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, wan: 0, pct: 0 },
+                user: { tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, wan: 0, pct: 0 }
             };
             document.querySelectorAll(".ia-body table.tbl tbody tr:not(.nodata)").forEach( (tr,idx) => {
                 const sxt = tr.querySelector("td.stat");
@@ -254,8 +219,9 @@ const ia = {
             let lnum = 0;
             document.querySelectorAll(".ia-body table tbody").forEach(tbody => {
                 const nodata = tbody.querySelector("tr.nodata");
-                nodata ? nodata.remove() : null;
+                nodata && nodata.remove();
                 let vnum = 0;
+                console.log(tbody.querySelectorAll("tr.sty,tr.ing,tr.com").length);
                 tbody.querySelectorAll("tr").forEach( tr => {
                     if( tr.is(":visible") ){
                         vnum++;
@@ -267,11 +233,11 @@ const ia = {
                 const notr = document.createElement("tr");
                 notr.innerHTML = '<td colspan="12">내역이 없습니다</td>';
                 notr.classList.add("nodata");
-                vnum < 1 ? tbody.appendChild(notr) : null ;
+                vnum < 1 && tbody.appendChild(notr) ;
             });
-            // console.log("ia.total.set();");
+            console.log("ia.total.set();");
         },
-        cate:function(){
+        cate: function(){
             // console.log("ia.total.cate();");
             document.querySelectorAll(".ia-body dd").forEach( dd => {
                 const trNum = dd.querySelectorAll("table tbody tr:not(.nodata)").length;
@@ -280,13 +246,13 @@ const ia = {
             });
         }
     },
-    user:{
-        init:function(){
+    user: {
+        init: function(){
             this.evt();
             this.set();
             this.load();
         },
-        evt:function(){
+        evt: function(){
             const _this = this;
             document.querySelectorAll(".ia-head .data select").forEach( select => {
                 select.addEventListener("change", e => {
@@ -298,7 +264,7 @@ const ia = {
                 });
             });
         },
-        set:function(){
+        set: function(){
             let optft = '<option value="all">작업자</option>';
             ia.opts.usrs.forEach( k => optft += '<option value="'+k+'">'+k+'</option>' );
             document.querySelector(".fillter").innerHTML = optft;
@@ -307,19 +273,19 @@ const ia = {
             Object.keys(ia.opts.stxt).forEach( k => optst += '<option value="'+k+'">'+k+'</option>' );
             document.querySelector(".statter").innerHTML = optst;
         },
-        load:function(){
+        load: function(){
             const opt1 = ia.data.get("ia-"+ia.plat(),"user") || "all" ;
             const opt2 = ia.data.get("ia-"+ia.plat(),"stat") || "all";
             this.filt(opt1,opt2);
             document.querySelector(".fillter").value = opt1;
             document.querySelector(".statter").value = opt2;
         },
-        filt:function(opt1,opt2){
+        filt: function(opt1,opt2){
             document.querySelectorAll(".ia-body table.tbl tbody tr").forEach( tr => {
                 const tname = tr.querySelector("td.name");
                 const tstat = tr.querySelector("td.stat");
-                const name = tname ? tname.innerText : null ;
-                const stat = tstat ? tstat.innerText : null ;
+                const name = tname && tname.innerText ;
+                const stat = tstat && tstat.innerText ;
               
                 if( opt1 == name && opt2 == stat ){
                     tr.style.display = "table-row";
@@ -338,14 +304,15 @@ const ia = {
                 // console.log( opt1,opt2,name,stat   , tr.style.display);
             });
             ia.total.set();
+            console.log("ia.usr.filt()");
         }
     },
-    memo:{
-        init:function(){
+    memo: {
+        init: function(){
             this.set();
             this.evt();
         },
-        evt:function(){
+        evt: function(){
             document.querySelectorAll("table.tbl td.memo .bt.more").forEach( el => el.addEventListener("click", bt => {
                 const td = bt.target.closest("td").classList;
                 td.contains("open") ? td.remove("open") : td.add("open");
@@ -363,7 +330,7 @@ const ia = {
                 });
             }));
         },
-        set:function(){
+        set: function(){
             document.querySelectorAll(".ia-body table.tbl .memo").forEach( memo => {
                 const msgs = '<div class="msgs">'+ memo.innerHTML +'</div>';
                 const mnum = memo.querySelectorAll("p").length;
@@ -377,7 +344,7 @@ const ia = {
             });
         }
     },
-    mact:function(num){
+    mact: function(num){
         // num = JSON.parse( localStorage.getItem("iaMenuSet") )  ;
         let path = location.pathname.split("/");
         path = "static";
@@ -395,15 +362,14 @@ const ia = {
             ia.veiwall.set("open");
         } else {
             if( !num ) {num = 1;} 
-            document.querySelector("body."+active[path]+" .ia-body .list>dt.tm"+num+" a").click();
-            document.querySelector("body."+active[path]+" .navs .menu>li:nth-child("+num+") a").click();
+            ia.menu.act(num);
         }
     },
-    veiwall:{
-        init:function(){
+    veiwall: {
+        init: function(){
             this.evt();
         },
-        evt:function(){
+        evt: function(){
             var _this = this;
             
             document.querySelector(".fixnav .bt.viewall").addEventListener("click", bt => {
@@ -411,7 +377,7 @@ const ia = {
                 isAll ? _this.set("close") : _this.set("open");
             });
         },
-        set:function(opt){
+        set: function(opt){
             const body = document.querySelector(".ia-body");
             const vbtn = document.querySelector(".fixnav .bt.viewall");
             if(opt=="open"){
@@ -424,18 +390,18 @@ const ia = {
                 vbtn.innerText = "전체보기";
                 const act =  document.querySelectorAll(".ia-body .navs .menu>li.active").length;
                 // console.log("act  "+act);
-                act == 0 ? ia.menu.act(1) : null ;
+                act == 0 && ia.menu.act(1) ;
             }
             ia.total.set();
             ia.update();
         }
     },
-    menu:{
-        init:function(){
+    menu: {
+        init: function(){
             this.set();
             this.evt();
         },
-        evt:function(){
+        evt: function(){
             var _this = this;
             document.querySelectorAll(".ia-body .list>dt a").forEach( (bt,i) => {
                 i++;
@@ -445,7 +411,7 @@ const ia = {
             document.querySelectorAll(".navs .menu>li a").forEach( (bt,i) => bt.addEventListener("click", a => this.act( i+1 ) ) );
             document.querySelector(".navs .selt").addEventListener("change", sel => this.act(sel.target.value) );
         },
-        act:function(idx){
+        act: function(idx){
             // console.log(idx);
             document.querySelector(".ia-body").classList.remove("all");
             document.querySelectorAll(".navs .menu li").forEach( (li,i) => {
@@ -460,7 +426,7 @@ const ia = {
             ia.data.set("ia-"+ia.plat(),{menu:idx});
             ia.total.set();
         },
-        set:function(){
+        set: function(){
             let menu = "";
             let selt = "";
             document.querySelectorAll(".ia-body .list>dt").forEach( (dt,idx) => {
@@ -475,8 +441,8 @@ const ia = {
             document.querySelector(".ia-body .navs").innerHTML = navsHtml;
         }
     },
-    include:{
-        init: function(){
+    include: {
+        init:  function(){
             this.set();
         },
         load: function (paramCallback) {
@@ -496,25 +462,22 @@ const ia = {
                 const obj = {};
                 Object.keys(opt).forEach( k => obj[k.trim()] = opt[k].trim() );
                 _this.fetch = fetch(url)
-                .then( res => res.ok ? res.text() : null )
+                .then( res => res.ok && res.text() )
                 .then( res => { 
                     cout++;
                     els.innerHTML = res;
-                    // console.log(url, obj, cout+"/"+inum);
                     const elc = els.firstElementChild;
+                    console.log(cout+"/"+inum, url, obj);
                     /* attr */
-                    for(const key in obj){
-                        const sxt = ( key != "class" && key != "display" && elc ) ;
-                        sxt ? elc.setAttribute( key, obj[key] ) : null ;
-                    }
+                    Object.keys(obj).forEach( k => k != "class" && k != "display" && elc && elc.setAttribute( k, obj[k] ) );
                     /* display */
                     elc && obj.display ? elc.style.display = obj.display : null;
                     /* class */
-                    const cls = elc && obj.class ? obj.class.split(" ") : null;
-                    for(const c in cls) elc.classList.add( cls[c] );
+                    const cls = elc && obj.class ? obj.class.split(" ") : [];
+                    cls.forEach( c => elc.classList.add(c) );
                     /* unwrap */
                     els.replaceWith( ...els.childNodes );
-                    cout == inum ? _this.acti() : null;
+                    cout == inum && _this.acti() ;
                 });
             });
         },
@@ -523,10 +486,39 @@ const ia = {
             this.call();
         },
         call: function(){
-            typeof this.loadCallback == "function" ? this.loadCallback(): null ;
+            typeof this.loadCallback == "function" && this.loadCallback();
         }
     }
 };
 
 ia.include.set();
 ia.include.load( e => ia.init() );
+
+
+
+Element.prototype.appendHtml = function(str){
+    var div = document.createElement("div");
+    div.innerHTML = str;
+    while (div.children.length > 0) {
+        // console.log(div.children);
+        this.appendChild( div.children[0] );
+    }
+};
+Element.prototype.prependHtml = function(str){
+    var div = document.createElement("div");
+    div.innerHTML = str;
+    while (div.children.length > 0) {
+        // console.log(div.children);
+        this.prepend( div.children[0] );
+    }
+};
+Element.prototype.is = function(opt){
+    // console.log(this);
+    if (opt == ":visible") {
+        return !!(  this.offsetWidth || this.offsetHeight || this.getClientRects().length );
+    }
+    if (opt == ":hidden") {
+        return !!!( this.offsetWidth || this.offsetHeight || this.getClientRects().length );
+    }
+    console.log(this , opt);
+};
