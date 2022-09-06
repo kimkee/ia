@@ -8,7 +8,6 @@ const ia = {
     init: function(){
         this.stats();
         this.total.init();
-        this.total.cate();
         this.user.init();
         this.menu.init();
         this.fixnav.init();
@@ -120,7 +119,8 @@ const ia = {
     },
     fixnav: {
         init: function(){
-            document.querySelector(".navs").appendHtml(this.els);
+            // document.querySelector(".navs").appendHtml(this.els);
+            ia.appendHtml( document.querySelector(".navs") , this.els ,'div' );
             this.evt();
             const theme = ia.data.get("ia","theme"); //
             this.them(theme);
@@ -167,8 +167,8 @@ const ia = {
                     '<em><i></i></em>'+
                 '</div>'+
             '</div>';
-             
-            document.querySelector("body").prependHtml(els);
+            ia.appendHtml( document.querySelector("body") , els );
+            // document.querySelector("body").appendHtml(els);
             document.querySelector("body").classList.add("is-loading");
             
         },
@@ -182,7 +182,7 @@ const ia = {
     },
     total: {
         init: function(){
-
+            this.cate();
         },
         set: function(){
             ia.loading.show();
@@ -233,7 +233,7 @@ const ia = {
                 const notr = document.createElement("tr");
                 notr.innerHTML = '<td colspan="12">내역이 없습니다</td>';
                 notr.classList.add("nodata");
-                vnum < 1 && tbody.appendChild(notr) ;
+                vnum < 1 && tbody.appendChild(notr);
             });
             console.log("ia.total.set();");
         },
@@ -253,7 +253,6 @@ const ia = {
             this.load();
         },
         evt: function(){
-            const _this = this;
             document.querySelectorAll(".ia-head .data select").forEach( select => {
                 select.addEventListener("change", e => {
                     console.log("로딩쇼");
@@ -288,16 +287,14 @@ const ia = {
                 const tstat = tr.querySelector("td.stat");
                 const name = tname && tname.innerText ;
                 const stat = tstat && tstat.innerText ;
-                // console.log(tr.classList.contains(ia.opts.stxt[opt2]) , ia.opts.stxt[opt2]);
+                tr.style.display = "none";           
                 if( opt1 == name && opt2 == stat ){
-                    tr.style.display = "table-row";
-                }else{
-                    tr.style.display = "none";
-                }
-                if( opt1 == "all" && opt2 == stat ){
                     tr.style.display = "table-row";
                 }
                 if( opt1 == name && opt2 == "all" ){
+                    tr.style.display = "table-row";
+                }
+                if( opt1 == "all" && opt2 == stat ){
                     tr.style.display = "table-row";
                 }
                 if( opt1 == "all" && opt2 == "all" ){
@@ -372,12 +369,10 @@ const ia = {
         init: function(){
             this.evt();
         },
-        evt: function(){
-            var _this = this;
-            
+        evt: function(){           
             document.querySelector(".fixnav .bt.viewall").addEventListener("click", bt => {
                 const isAll = document.querySelector(".ia-body").classList.contains("all");
-                isAll ? _this.set("close") : _this.set("open");
+                isAll ? this.set("close") : this.set("open");
             });
         },
         set: function(opt){
@@ -404,7 +399,6 @@ const ia = {
             this.evt();
         },
         evt: function(){
-            var _this = this;
             document.querySelectorAll(".ia-body .list>dt a").forEach( (bt,i) => {
                 i++;
                 bt.setAttribute("onclick","ia.menu.act("+ i +")");
@@ -455,7 +449,6 @@ const ia = {
             incd.length ? this.each(incd) : this.acti();
         },
         each: function(incd){ 
-            const _this = this;
             const inum = incd.length;
             let cout = 0;
             incd.forEach( els => {
@@ -463,13 +456,13 @@ const ia = {
                 const opt = JSON.parse(els.getAttribute("data-include-opt")) || {};
                 const obj = {};
                 Object.keys(opt).forEach( k => obj[k.trim()] = opt[k].trim() );
-                _this.fetch = fetch(url)
+                this.fetch = fetch(url)
                 .then( res => res.ok && res.text() )
                 .then( res => { 
                     cout++;
                     els.innerHTML = res;
                     const elc = els.firstElementChild;
-                    console.log(cout+"/"+inum, url, obj);
+                    // console.log(cout+"/"+inum, url, obj);
                     /* attr */
                     Object.keys(obj).forEach( k => k != "class" && k != "display" && elc && elc.setAttribute( k, obj[k] ) );
                     /* display */
@@ -479,7 +472,7 @@ const ia = {
                     cls.forEach( c => elc.classList.add(c) );
                     /* unwrap */
                     els.replaceWith( ...els.childNodes );
-                    cout == inum && _this.acti() ;
+                    cout == inum && this.acti() ;
                 });
             });
         },
@@ -490,36 +483,20 @@ const ia = {
         call: function(){
             typeof this.loadCallback == "function" && this.loadCallback();
         }
+    },
+    /**
+     * @sel 선택자 - Ex: querySelector("body")
+     * @str HTML문자열 - Ex: '<ul class="menu"></ul>'
+     * @tag 생성태그 - Ex: 'div'
+     * */ 
+    appendHtml: function(sel,str,tag){
+        tag || 'div';
+        var div = document.createElement(tag);
+        div.innerHTML = str;
+        while (div.children.length > 0) { sel.appendChild( div.children[0] ); }
     }
 };
-
+ia.loading.show();
 ia.include.set();
 ia.include.load( e => ia.init() );
 
-
-
-Element.prototype.appendHtml = function(str){
-    var div = document.createElement("div");
-    div.innerHTML = str;
-    while (div.children.length > 0) {
-        // console.log(div.children);
-        this.appendChild( div.children[0] );
-    }
-};
-Element.prototype.prependHtml = function(str){
-    var div = document.createElement("div");
-    div.innerHTML = str;
-    while (div.children.length > 0) {
-        // console.log(div.children);
-        this.prepend( div.children[0] );
-    }
-};
-// Element.prototype.is = function(opt){
-    // if (opt == ":visible") {
-        // return !!(  this.offsetWidth || this.offsetHeight || this.getClientRects().length );
-    // }
-    // if (opt == ":hidden") {
-        // return !!!( this.offsetWidth || this.offsetHeight || this.getClientRects().length );
-    // }
-    // console.log(this , opt);
-// };
