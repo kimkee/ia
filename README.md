@@ -1,4 +1,4 @@
-# ia
+# IA
 Project's  HTML Working List 
 
 converting jQuery version to pure javascript

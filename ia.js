@@ -200,7 +200,7 @@ const ia = {
                 count.tots.tot++;
                 count.tots[ttt]++;
                 // if( tr.is(":visible") ){ 
-                if( tr.style.display == "table-row"  ){ 
+                if( tr.style.display == "table-row" && tr.closest("dd.show")  ){ 
                     count.user.tot++;
                     count.user[ttt]++;
                 }
@@ -256,11 +256,13 @@ const ia = {
             const _this = this;
             document.querySelectorAll(".ia-head .data select").forEach( select => {
                 select.addEventListener("change", e => {
+                    console.log("로딩쇼");
+                    ia.loading.show();
                     const val1 = document.querySelector(".fillter").value;
                     const val2 = document.querySelector(".statter").value;
-                    this.filt(val1, val2);
                     ia.data.set("ia-"+ia.plat(), {user: val1});
                     ia.data.set("ia-"+ia.plat(), {stat: val2});
+                    setTimeout(() => this.filt(val1, val2),50); 
                 });
             });
         },
@@ -286,7 +288,7 @@ const ia = {
                 const tstat = tr.querySelector("td.stat");
                 const name = tname && tname.innerText ;
                 const stat = tstat && tstat.innerText ;
-              
+                // console.log(tr.classList.contains(ia.opts.stxt[opt2]) , ia.opts.stxt[opt2]);
                 if( opt1 == name && opt2 == stat ){
                     tr.style.display = "table-row";
                 }else{
@@ -304,6 +306,7 @@ const ia = {
                 // console.log( opt1,opt2,name,stat   , tr.style.display);
             });
             ia.total.set();
+            
             console.log("ia.usr.filt()");
         }
     },
@@ -511,13 +514,12 @@ Element.prototype.prependHtml = function(str){
         this.prepend( div.children[0] );
     }
 };
-Element.prototype.is = function(opt){
-    // console.log(this);
-    if (opt == ":visible") {
-        return !!(  this.offsetWidth || this.offsetHeight || this.getClientRects().length );
-    }
-    if (opt == ":hidden") {
-        return !!!( this.offsetWidth || this.offsetHeight || this.getClientRects().length );
-    }
-    console.log(this , opt);
-};
+// Element.prototype.is = function(opt){
+    // if (opt == ":visible") {
+        // return !!(  this.offsetWidth || this.offsetHeight || this.getClientRects().length );
+    // }
+    // if (opt == ":hidden") {
+        // return !!!( this.offsetWidth || this.offsetHeight || this.getClientRects().length );
+    // }
+    // console.log(this , opt);
+// };
