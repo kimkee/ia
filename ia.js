@@ -35,15 +35,15 @@ const ia = {
     },
     data: {
         set: function(name,obj){
-            var orgs = JSON.parse( localStorage.getItem(name) ) || {};
-            var news = obj;
+            let orgs = JSON.parse( localStorage.getItem(name) ) || {};
+            let news = obj;
             if (typeof obj == "object") {
                 news = Object.assign(orgs,news);
             }
             localStorage.setItem(name, JSON.stringify(news) );
         },
         get: function(name,key){ // console.log(key);
-            var data = JSON.parse( localStorage.getItem(name) );
+            let data = JSON.parse( localStorage.getItem(name) );
             if (key != undefined) {
                 try{
                     return data[key];
@@ -56,7 +56,7 @@ const ia = {
         },
     },
     plat: function(){
-        var path = location.pathname.split("/");
+        let path = location.pathname.split("/");
         path = "static";
         return path;
     },
@@ -204,10 +204,9 @@ const ia = {
                     count.user.tot++;
                     count.user[ttt]++;
                 }
-                
             });
-            Object.keys(count.user).forEach( k => document.querySelector(".info.usr ."+k).innerText = count.user[k] );
             Object.keys(count.tots).forEach( k => document.querySelector(".info.tot ."+k).innerText = count.tots[k] );
+            Object.keys(count.user).forEach( k => document.querySelector(".info.usr ."+k).innerText = count.user[k] );
 
             count.user.pct = (count.user.com + count.user.chk + count.user.del) / count.user.tot * 100 || 0;
             document.querySelector(".info.usr .pct").innerHTML =  count.user.pct.toFixed(1)+"%" ;
@@ -223,13 +222,13 @@ const ia = {
                 nodata && nodata.remove();
                 let vnum = 0;
                 tbody.querySelectorAll("tr").forEach( tr => {
-                    if( (tr.style.display == "table-row") ){
+                    if( tr.style.display == "table-row" ){
                         vnum++;
                         lnum++;
                         tr.querySelector("td.numb").innerText = lnum;
                     }
-                    tbody.setAttribute("trnum",vnum);
                 });
+                tbody.setAttribute("trnum",vnum);
                 const notr = document.createElement("tr");
                 notr.innerHTML = '<td colspan="12">내역이 없습니다</td>';
                 notr.classList.add("nodata");
@@ -267,7 +266,7 @@ const ia = {
         },
         set: function(){
             let optft = '<option value="all">작업자</option>';
-            ia.opts.usrs.forEach( k => optft += '<option value="'+k+'">'+k+'</option>' );
+            Object.keys(ia.opts.usrs).forEach( k => optft += '<option value="'+ia.opts.usrs[k]+'">'+ia.opts.usrs[k]+'</option>' );
             document.querySelector(".fillter").innerHTML = optft;
 
             let optst = '<option value="all">상태</option>';
@@ -288,18 +287,10 @@ const ia = {
                 const name = tname && tname.innerText ;
                 const stat = tstat && tstat.innerText ;
                 tr.style.display = "none";           
-                if( opt1 == name && opt2 == stat ){
-                    tr.style.display = "table-row";
-                }
-                if( opt1 == name && opt2 == "all" ){
-                    tr.style.display = "table-row";
-                }
-                if( opt1 == "all" && opt2 == stat ){
-                    tr.style.display = "table-row";
-                }
-                if( opt1 == "all" && opt2 == "all" ){
-                    tr.style.display = "table-row";
-                }
+                if( opt1 == name  && opt2 == stat  ){ tr.style.display = "table-row"; }
+                if( opt1 == name  && opt2 == "all" ){ tr.style.display = "table-row"; }
+                if( opt1 == "all" && opt2 == stat  ){ tr.style.display = "table-row"; }
+                if( opt1 == "all" && opt2 == "all" ){ tr.style.display = "table-row"; }
                 // console.log( opt1,opt2,name,stat   , tr.style.display);
             });
             ia.total.set();
@@ -438,10 +429,10 @@ const ia = {
         }
     },
     include: {
-        init:  function(){
+        init: function(){
             this.set();
         },
-        load: function (paramCallback) {
+        load: function(paramCallback){
             this.loadCallback = paramCallback; 
         },
         set: function(){
@@ -457,22 +448,21 @@ const ia = {
                 const obj = {};
                 Object.keys(opt).forEach( k => obj[k.trim()] = opt[k].trim() );
                 this.fetch = fetch(url)
-                .then( res => res.ok && res.text() )
-                .then( res => { 
+                .then( res => res.ok && res.text() ).then( res => { 
                     cout++;
                     els.innerHTML = res;
                     const elc = els.firstElementChild;
-                    // console.log(cout+"/"+inum, url, obj);
+                    console.log(cout+"/"+inum, url, obj);
                     /* attr */
                     Object.keys(obj).forEach( k => k != "class" && k != "display" && elc && elc.setAttribute( k, obj[k] ) );
                     /* display */
                     elc && obj.display ? elc.style.display = obj.display : null;
                     /* class */
                     const cls = elc && obj.class ? obj.class.split(" ") : [];
-                    cls.forEach( c => elc.classList.add(c) );
+                    Object.keys(cls).forEach( c => elc.classList.add(cls[c]) );
                     /* unwrap */
                     els.replaceWith( ...els.childNodes );
-                    cout == inum && this.acti() ;
+                    cout == inum && this.acti();
                 });
             });
         },
@@ -491,7 +481,8 @@ const ia = {
      * */ 
     appendHtml: function(sel,str,tag){
         tag || 'div';
-        var div = document.createElement(tag);
+        let div = document.createElement(tag);
+        div.classList.add("abc");
         div.innerHTML = str;
         while (div.children.length > 0) { sel.appendChild( div.children[0] ); }
     }
