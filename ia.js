@@ -28,7 +28,7 @@ const ia = {
             "완료": "com", "삭제": "del", "우선": "wan",
         },
         label: { /* td라벨 */
-            numb: "NO", lev2: "Lv.2", lev3: "Lv.3", lev4: "Lv.4", lev5: "Lv.5",
+            numb: "No", lev2: "Lv.2", lev3: "Lv.3", lev4: "Lv.4", lev5: "Lv.5",
             tits: "화면", code: "ID", urls: "파일", date: "날짜", stat: "상태", name: "담당", memo: "메모",
         },
     },
@@ -36,14 +36,14 @@ const ia = {
         set: function(name,obj){
             let orgs = JSON.parse( localStorage.getItem(name) ) || {};
             let news = obj;
-            if (typeof obj == "object") {
+            if( typeof obj == "object" ){
                 news = Object.assign(orgs,news);
             }
             localStorage.setItem(name, JSON.stringify(news) );
         },
         get: function(name,key){ // console.log(key);
             let data = JSON.parse( localStorage.getItem(name) );
-            if (key != undefined) {
+            if( key != undefined ){
                 try{
                     return data[key];
                 }catch(e) {
@@ -74,11 +74,10 @@ const ia = {
                 !name.innerText ? name.innerText = "미지정" : null ;
                 tr.classList.add(ia.opts.stxt[txt]||'sty');
                 // console.log( txt , !!name.innerText );
-                
                 const link = tr.querySelector("td.urls a");
-                const href = link.getAttribute("href").includes("javascript:;") ? null : link.getAttribute("href").replace("../../html",".");
+                const href = link.getAttribute("href");
+                link.innerText =  href.includes("javascript:;") ? null : href.replace("../../html",".");
                 link.setAttribute("target","_blank");
-                link.innerText =  href;
                 link.addEventListener("click", e => {
                     e.stopPropagation();
                     e.target.closest("tr").classList.add("active");
@@ -86,8 +85,7 @@ const ia = {
                 tr.addEventListener("click", e => {
                     // e.stopPropagation();
                     e.target != tr.querySelector("button") ? tr.classList.toggle("active") : null ;
-                } );
-    
+                });
                 /* td에 data-label 넣기 */
                 Object.keys(ia.opts.label).forEach( k => tr.querySelector("td."+k).setAttribute("data-label",ia.opts.label[k]) );
             });
@@ -98,7 +96,7 @@ const ia = {
                 e.classList.add("tm"+i);
                 e.nextElementSibling.classList.add("dd"+i);
             });
-            console.log( "ia.stats();" );
+            console.log( "ia.stats.set();" );
         }
     },
     mact: {
@@ -167,29 +165,19 @@ const ia = {
             window.scrollTo(0, 0);
         },
         them: function(type){
-            if (type == false) {
-                // window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ?  type = "light" :  type = "dark";
-                type = "dark";
-            }
-            if( type == "dark" ){
-                document.querySelector("body").classList.add("is-dark");
-                document.querySelector(".fixnav .bt.them").innerText = "🌚";
-                document.querySelector('[name="theme-color"]').setAttribute("content","#212121");
-            }
-            if( type == "light"){
-                document.querySelector("body").classList.remove("is-dark");
-                document.querySelector(".fixnav .bt.them").innerText = "🌞";
-                document.querySelector('[name="theme-color"]').setAttribute("content","#ffffff");
-            }
-            // console.log(type);
-            ia.data.set("ia",{theme:type}); // 
+            const bcls = document.querySelector("body").classList;
+            const bthm = document.querySelector(".fixnav .bt.them");
+            const tclr = document.querySelector('[name="theme-color"]');
+            type = !type ? "dark" : type; 
+            bthm.innerText = type == "dark" ? "🌚" : "🌞";
+            if( type == "dark" ){ bcls.add("is-dark");    tclr.setAttribute("content","#212121"); }
+            if( type == "light"){ bcls.remove("is-dark"); tclr.setAttribute("content","#ffffff"); }
+            ia.data.set("ia",{theme:type});
         }
     },
     loading: { // 로딩중..
         show: function () {
-
             if( document.querySelector(".ia-loading") ) return;
-            
             const els = 
             '<div class="ia-loading">'+
                 '<div class="bx">'+
@@ -197,14 +185,12 @@ const ia = {
                 '</div>'+
             '</div>';
             ia.appendHtml( document.querySelector("body") , els );
-            // document.querySelector("body").appendHtml(els);
             document.querySelector("body").classList.add("is-loading");
-            
         },
         hide: function () {
             const loading = document.querySelector(".ia-loading");
             if (loading) {
-                document.querySelector(".ia-loading").remove();
+                loading.remove();
                 document.querySelector("body").classList.remove("is-loading");
             }
         }
@@ -364,7 +350,7 @@ const ia = {
                 selt += '<option value="'+idx+'">'+dt.querySelector("a").innerText+''+count+'</option>';
             });
             // console.log(selt,menu);
-            const navsHtml = '<ul class="menu">'+menu+'</ul><select class="selt" title="카테고리선택">'+selt+'</select>';
+            const navsHtml = '<ul class="menu">'+menu+'</ul><select class="selt">'+selt+'</select>';
             document.querySelector(".ia-body .navs").innerHTML = navsHtml;
         }
     },
