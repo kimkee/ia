@@ -119,8 +119,7 @@ const ia = {
     },
     fixnav: {
         init: function(){
-            // document.querySelector(".navs").appendHtml(this.els);
-            ia.appendHtml( document.querySelector(".navs") , this.els ,'div' );
+            ia.appendHtml( document.querySelector(".navs") , this.els );
             this.evt();
             const theme = ia.data.get("ia","theme"); //
             this.them(theme);
@@ -229,10 +228,8 @@ const ia = {
                     }
                 });
                 tbody.setAttribute("trnum",vnum);
-                const notr = document.createElement("tr");
-                notr.innerHTML = '<td colspan="12">내역이 없습니다</td>';
-                notr.classList.add("nodata");
-                vnum < 1 && tbody.appendChild(notr);
+                const notr = '<tr class="nodata"><td colspan="12">내역이 없습니다.</td></tr>';
+                vnum < 1 && ia.appendHtml(tbody,notr);
             });
             console.log("ia.total.set();");
         },
@@ -474,15 +471,8 @@ const ia = {
             typeof this.loadCallback == "function" && this.loadCallback();
         }
     },
-    /**
-     * @sel 선택자 - Ex: querySelector("body")
-     * @str HTML문자열 - Ex: '<ul class="menu"></ul>'
-     * @tag 생성태그 - Ex: 'div'
-     * */ 
-    appendHtml: function(sel,str,tag){
-        tag || 'div';
-        let div = document.createElement(tag);
-        div.classList.add("abc");
+    appendHtml: function(sel,str){
+        let div = document.createElement(sel.tagName);
         div.innerHTML = str;
         while (div.children.length > 0) { sel.appendChild( div.children[0] ); }
     }
