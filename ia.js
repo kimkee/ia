@@ -6,16 +6,15 @@
 
 const ia = {
     init: function(){
-        this.stats();
+        this.stats.init();
         this.total.init();
         this.user.init();
         this.menu.init();
         this.fixnav.init();
         this.veiwall.init();
-        this.mact();
+        this.mact.init();
         this.memo.init();
         this.ly.init();
-        document.title = "IA-"+ia.plat().toUpperCase();
     },
     update: function(){
         this.ly.set();
@@ -60,42 +59,72 @@ const ia = {
         path = "static";
         return path;
     },
-    stats: function(){
-        const tbtr = document.querySelectorAll(".ia-body table tbody tr");
-        tbtr.forEach( tr => {
-            const stat = tr.querySelector("td.stat");
-            const name = tr.querySelector("td.name");
-            const txt = stat.innerText;
-            !txt ? stat.innerText = '대기':null;
-            !name.innerText && tr.classList.add("none");
-            !name.innerText ? name.innerText = "미지정" : null ;
-            tr.classList.add(ia.opts.stxt[txt]||'sty');
-            // console.log( txt , !!name.innerText );
-            
-            const link = tr.querySelector("td.urls a");
-            const href = link.getAttribute("href").includes("javascript:;") ? null : link.getAttribute("href").replace("../../html",".");
-            link.setAttribute("target","_blank");
-            link.innerText =  href;
-            link.addEventListener("click", e => {
-                e.stopPropagation();
-                e.target.closest("tr").classList.add("active");
+    stats: {
+        init: function(){
+            this.set();
+        },
+        set: function(){
+            const tbtr = document.querySelectorAll(".ia-body table tbody tr");
+            tbtr.forEach( tr => {
+                const stat = tr.querySelector("td.stat");
+                const name = tr.querySelector("td.name");
+                const txt = stat.innerText;
+                !txt ? stat.innerText = '대기':null;
+                !name.innerText && tr.classList.add("none");
+                !name.innerText ? name.innerText = "미지정" : null ;
+                tr.classList.add(ia.opts.stxt[txt]||'sty');
+                // console.log( txt , !!name.innerText );
+                
+                const link = tr.querySelector("td.urls a");
+                const href = link.getAttribute("href").includes("javascript:;") ? null : link.getAttribute("href").replace("../../html",".");
+                link.setAttribute("target","_blank");
+                link.innerText =  href;
+                link.addEventListener("click", e => {
+                    e.stopPropagation();
+                    e.target.closest("tr").classList.add("active");
+                });
+                tr.addEventListener("click", e => {
+                    // e.stopPropagation();
+                    e.target != tr.querySelector("button") ? tr.classList.toggle("active") : null ;
+                } );
+    
+                /* td에 data-label 넣기 */
+                Object.keys(ia.opts.label).forEach( k => tr.querySelector("td."+k).setAttribute("data-label",ia.opts.label[k]) );
             });
-            tr.addEventListener("click", e => {
-                // e.stopPropagation();
-                e.target != tr.querySelector("button") ? tr.classList.toggle("active") : null ;
-            } );
-
-            /* td에 data-label 넣기 */
-            Object.keys(ia.opts.label).forEach( k => tr.querySelector("td."+k).setAttribute("data-label",ia.opts.label[k]) );
-        });
-
-        const dtd = document.querySelectorAll(".ia-body .list>dt");
-        dtd.forEach( (e,i) => {
-            i++;
-            e.classList.add("tm"+i);
-            e.nextElementSibling.classList.add("dd"+i);
-        });
-        console.log( "ia.stats();" );
+    
+            const dtd = document.querySelectorAll(".ia-body .list>dt");
+            dtd.forEach( (e,i) => {
+                i++;
+                e.classList.add("tm"+i);
+                e.nextElementSibling.classList.add("dd"+i);
+            });
+            console.log( "ia.stats();" );
+        }
+    },
+    mact: {
+        init: function(){
+            this.set();
+        },
+        set:function(num){
+            // num = JSON.parse( localStorage.getItem("iaMenuSet") )  ;
+            let path = location.pathname.split("/");
+            path = "static";
+            const active = {"static":"static", "mo":"mo", "pc":"pc", "admin":"admin"};
+            // console.log(path ,active , active[path]);
+            const liact = document.querySelector(".ia-head .link>li."+active[path]);
+            liact && liact.classList.add("active");
+            ia.data.set("ia-"+ia.plat(),{plat:active[path]});
+            document.querySelector("body").classList.add(active[path]);
+            
+            num = ia.data.get("ia-"+ia.plat(),"menu") ;
+    
+            if( num == 0 ) {
+                ia.veiwall.set("open");
+            } else {
+                if( !num ) {num = 1;} 
+                ia.menu.act(num);
+            }
+        }
     },
     ly: {
         init: function(){
@@ -108,6 +137,7 @@ const ia = {
             window.addEventListener("scroll", e => this.set());
         },
         set: function(){
+            document.title = "IA-"+ia.plat().toUpperCase();
             const hdHeight = document.querySelector(".ia-head").offsetHeight  || 0;
             const nvHeight = document.querySelector(".ia-body .navs").offsetHeight || 0;
             // console.log(hdHeight , nvHeight);
@@ -231,7 +261,7 @@ const ia = {
                 const notr = '<tr class="nodata"><td colspan="12">내역이 없습니다.</td></tr>';
                 vnum < 1 && ia.appendHtml(tbody,notr);
             });
-            console.log("ia.total.set();");
+            // console.log("ia.total.set();");
         },
         cate: function(){
             // console.log("ia.total.cate();");
@@ -283,7 +313,7 @@ const ia = {
                 const tstat = tr.querySelector("td.stat");
                 const name = tname && tname.innerText ;
                 const stat = tstat && tstat.innerText ;
-                tr.style.display = "none";           
+                tr.style.display = "none";
                 if( opt1 == name  && opt2 == stat  ){ tr.style.display = "table-row"; }
                 if( opt1 == name  && opt2 == "all" ){ tr.style.display = "table-row"; }
                 if( opt1 == "all" && opt2 == stat  ){ tr.style.display = "table-row"; }
@@ -291,94 +321,7 @@ const ia = {
                 // console.log( opt1,opt2,name,stat   , tr.style.display);
             });
             ia.total.set();
-            
-            console.log("ia.usr.filt()");
-        }
-    },
-    memo: {
-        init: function(){
-            this.set();
-            this.evt();
-        },
-        evt: function(){
-            document.querySelectorAll("table.tbl td.memo .bt.more").forEach( el => el.addEventListener("click", bt => {
-                const td = bt.target.closest("td").classList;
-                td.contains("open") ? td.remove("open") : td.add("open");
-            }));
-            
-            document.querySelectorAll("table.tbl th.memo .bt.more").forEach( el => el.addEventListener("click", bt => {
-                document.querySelectorAll("table.tbl").forEach( tbl => {
-                    if( tbl.classList.contains("open") ) {
-                        tbl.classList.remove("open");
-                        tbl.querySelectorAll("td.memo").forEach( memo => memo.classList.remove("open"));
-                    }else{
-                        tbl.classList.add("open");
-                        tbl.querySelectorAll("td.memo").forEach( memo => memo.classList.add("open"));
-                    }
-                });
-            }));
-        },
-        set: function(){
-            document.querySelectorAll(".ia-body table.tbl .memo").forEach( memo => {
-                const msgs = '<div class="msgs">'+ memo.innerHTML +'</div>';
-                const mnum = memo.querySelectorAll("p").length;
-                if (mnum >= 2 || memo.tagName == "TH") {
-                    memo.classList.add("more");
-                    memo.innerHTML  = '<button class="bt more" type="button">+</button>'+ msgs;
-                }else{
-                    memo.classList.remove("more");
-                    memo.innerHTML  = msgs;
-                }
-            });
-        }
-    },
-    mact: function(num){
-        // num = JSON.parse( localStorage.getItem("iaMenuSet") )  ;
-        let path = location.pathname.split("/");
-        path = "static";
-        const active = {"static":"static", "mo":"mo", "pc":"pc", "admin":"admin"};
-        // console.log(path ,active , active[path]);
-        
-        const liact = document.querySelector(".ia-head .link>li."+active[path]);
-        liact && liact.classList.add("active");
-        ia.data.set("ia-"+ia.plat(),{plat:active[path]});
-        document.querySelector("body").classList.add(active[path]);
-        
-        num = ia.data.get("ia-"+ia.plat(),"menu") ;
-
-        if( num == 0 ) {
-            ia.veiwall.set("open");
-        } else {
-            if( !num ) {num = 1;} 
-            ia.menu.act(num);
-        }
-    },
-    veiwall: {
-        init: function(){
-            this.evt();
-        },
-        evt: function(){           
-            document.querySelector(".fixnav .bt.viewall").addEventListener("click", bt => {
-                const isAll = document.querySelector(".ia-body").classList.contains("all");
-                isAll ? this.set("close") : this.set("open");
-            });
-        },
-        set: function(opt){
-            const body = document.querySelector(".ia-body");
-            const vbtn = document.querySelector(".fixnav .bt.viewall");
-            if(opt=="open"){
-                body.classList.add("all");
-                vbtn.innerText = "메뉴닫기";
-                ia.data.set("ia-"+ia.plat(),{menu:0});
-                document.querySelectorAll(".list dd").forEach( dd => dd.classList.add("show") );                
-            }else{
-                body.classList.remove("all");
-                vbtn.innerText = "전체보기";
-                const act =  document.querySelectorAll(".ia-body .navs .menu>li.active").length;
-                act == 0 && ia.menu.act(1) ;
-            }
-            ia.total.set();
-            ia.update();
+            // console.log("ia.usr.filt()");
         }
     },
     menu: {
@@ -425,6 +368,71 @@ const ia = {
             document.querySelector(".ia-body .navs").innerHTML = navsHtml;
         }
     },
+    memo: {
+        init: function(){
+            this.set();
+            this.evt();
+        },
+        evt: function(){
+            document.querySelectorAll("table.tbl td.memo .bt.more").forEach( el => el.addEventListener("click", bt => {
+                const td = bt.target.closest("td").classList;
+                td.contains("open") ? td.remove("open") : td.add("open");
+            }));
+            
+            document.querySelectorAll("table.tbl th.memo .bt.more").forEach( el => el.addEventListener("click", bt => {
+                document.querySelectorAll("table.tbl").forEach( tbl => {
+                    if( tbl.classList.contains("open") ) {
+                        tbl.classList.remove("open");
+                        tbl.querySelectorAll("td.memo").forEach( memo => memo.classList.remove("open"));
+                    }else{
+                        tbl.classList.add("open");
+                        tbl.querySelectorAll("td.memo").forEach( memo => memo.classList.add("open"));
+                    }
+                });
+            }));
+        },
+        set: function(){
+            document.querySelectorAll(".ia-body table.tbl .memo").forEach( memo => {
+                const msgs = '<div class="msgs">'+ memo.innerHTML +'</div>';
+                const mnum = memo.querySelectorAll("p").length;
+                if (mnum >= 2 || memo.tagName == "TH") {
+                    memo.classList.add("more");
+                    memo.innerHTML  = '<button class="bt more" type="button">+</button>'+ msgs;
+                }else{
+                    memo.classList.remove("more");
+                    memo.innerHTML  = msgs;
+                }
+            });
+        }
+    },
+    veiwall: {
+        init: function(){
+            this.evt();
+        },
+        evt: function(){           
+            document.querySelector(".fixnav .bt.viewall").addEventListener("click", bt => {
+                const isAll = document.querySelector(".ia-body").classList.contains("all");
+                isAll ? this.set("close") : this.set("open");
+            });
+        },
+        set: function(opt){
+            const body = document.querySelector(".ia-body");
+            const vbtn = document.querySelector(".fixnav .bt.viewall");
+            if(opt=="open"){
+                body.classList.add("all");
+                vbtn.innerText = "메뉴닫기";
+                ia.data.set("ia-"+ia.plat(),{menu:0});
+                document.querySelectorAll(".list dd").forEach( dd => dd.classList.add("show") );                
+            }else{
+                body.classList.remove("all");
+                vbtn.innerText = "전체보기";
+                const act =  document.querySelectorAll(".ia-body .navs .menu>li.active").length;
+                act == 0 && ia.menu.act(1) ;
+            }
+            ia.total.set();
+            ia.update();
+        }
+    },
     include: {
         init: function(){
             this.set();
@@ -449,7 +457,7 @@ const ia = {
                     cout++;
                     els.innerHTML = res;
                     const elc = els.firstElementChild;
-                    console.log(cout+"/"+inum, url, obj);
+                    // console.log(cout+"/"+inum, url, obj);
                     /* attr */
                     Object.keys(obj).forEach( k => k != "class" && k != "display" && elc && elc.setAttribute( k, obj[k] ) );
                     /* display */

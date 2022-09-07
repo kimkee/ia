@@ -353,13 +353,13 @@ body::-webkit-scrollbar-thumb:hover{background-color:#ffffff;}
     .ia-wrap{padding-bottom: 43rem;padding-right: 8rem;}
 	.ia-body.all .list{padding-top: 0rem;}
 	.ia-body.all .navs{display:block;}
-	.ia-body{padding-top: 4rem !important;}
+	.ia-body{padding-top: 7rem !important;}
 	.ia-body .list{}
 	.ia-body .list>dt{margin-bottom:5rem;margin: 8rem 0rem 3rem 0rem;}
     .ia-body .navs{position: fixed;bottom: 0rem;left: 0rem;right: 0;top: auto !important;z-index: 10;padding: 9rem 8rem;background: #fff;border-top: #ddd solid 1rem;box-shadow: 0rem -2rem 3rem rgb(0 0 0 / 6%);min-height: 50rem;border-bottom-width: 0rem;}
     .ia-body .navs .selt+.menu{margin-top:5rem;}
 	.ia-body .navs .selt{display:block;}
-	.ia-body .navs .menu{display: none; border-bottom-width: 0rem;}
+	.ia-body .navs .menu{display: none;border-bottom-width: 0rem;}
 	.ia-body.all .navs .selt{display: none;}
 	.ia-body .list dd{padding-top: 0rem;}
 	.ia-body table.tbl{border-top-width:0rem;}
