@@ -138,13 +138,13 @@ const ia = {
             // console.log(hdHeight , nvHeight);
             document.querySelector(".ia-wrap").style.paddingTop = hdHeight+"rem";
             document.querySelector(".ia-body").style.paddingTop = nvHeight+"rem";
-            document.querySelector(".ia-body .fixnav").style.top = hdHeight+nvHeight+"rem";
+            document.querySelector(".ia-body .fixs").style.top = hdHeight+nvHeight+"rem";
             document.querySelector(".ia-body .navs").style.top = hdHeight+"rem";
         }
     },
     fixnav: {
         init: function(){
-            ia.appendHtml( document.querySelector(".navs") , this.els );
+            ia.appendHtml( document.querySelector(".fixs") , this.els );
             this.evt();
             const theme = ia.data.get("ia","theme");
             this.them(theme);
@@ -262,7 +262,7 @@ const ia = {
         evt: function(){
             document.querySelectorAll(".ia-head .data select").forEach( select => {
                 select.addEventListener("change", e => {
-                    console.log("로딩쇼");
+                    // console.log("로딩쇼");
                     ia.loading.show();
                     const val1 = document.querySelector(".fillter").value;
                     const val2 = document.querySelector(".statter").value;
@@ -317,7 +317,7 @@ const ia = {
                 bt.addEventListener("click", a => ia.veiwall.set("close"));
             } );
             document.querySelectorAll(".navs .menu>li a").forEach( (bt,i) => bt.addEventListener("click", a => this.act( i+1 ) ) );
-            document.querySelector(".navs .selt").addEventListener("change", sel => this.act(sel.target.value) );
+            document.querySelector(".fixs .selt").addEventListener("change", sel => this.act(sel.target.value) );
         },
         act: function(idx){
             // console.log(idx);
@@ -325,7 +325,7 @@ const ia = {
             document.querySelectorAll(".navs .menu li").forEach( (li,i) => {
                 idx == i+1 ? li.classList.add("active") : li.classList.remove("active");
             });
-            document.querySelector(".navs .selt option[value='"+idx+"']").selected = true;
+            document.querySelector(".fixs .selt option[value='"+idx+"']").selected = true;
             document.querySelectorAll(".ia-body .list dt").forEach( (dt,i) => {
                 const dd = dt.nextElementSibling;
                 idx == i+1 ? dt.classList.add("active") : dt.classList.remove("active");
@@ -345,8 +345,10 @@ const ia = {
                 selt += '<option value="'+idx+'">'+dt.querySelector("a").innerText+''+count+'</option>';
             });
             // console.log(selt,menu);
-            const navsHtml = '<ul class="menu">'+menu+'</ul><select class="selt">'+selt+'</select>';
-            document.querySelector(".ia-body .navs").innerHTML = navsHtml;
+            const menuHtml = '<ul class="menu">'+menu+'</ul>';
+            const seltHtml = '<select class="selt">'+selt+'</select>';
+            document.querySelector(".ia-body .navs").innerHTML = menuHtml;
+            document.querySelector(".ia-body .fixs").innerHTML = seltHtml;
         }
     },
     memo: {
