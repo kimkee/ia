@@ -91,7 +91,7 @@ const ia = {
                 Object.keys(ia.opts.label).forEach( k => tr.querySelector("td."+k).setAttribute("data-label",ia.opts.label[k]) );
             });
     
-            const dtd = document.querySelectorAll(".ia-body .list>dd");
+            const dtd = document.querySelectorAll(".ia-body .list>li");
             dtd.forEach( (e,i) => {
                 i++;
                 // e.classList.add("tm"+i);
@@ -210,7 +210,7 @@ const ia = {
                 count.tots.tot++;
                 count.tots[ttt]++;
                 // if( tr.is(":visible") ){ 
-                if( tr.style.display == "table-row" && tr.closest("dd.show")  ){ 
+                if( tr.style.display == "table-row" && tr.closest("li.show")  ){ 
                     count.user.tot++;
                     count.user[ttt]++;
                 }
@@ -227,7 +227,7 @@ const ia = {
             document.querySelector(".info.tot .graph .bar").style.width = count.tots.pct.toFixed(1)+"%";
 
             let lnum = 0;
-            document.querySelectorAll(".ia-body dd.show table tbody").forEach(tbody => {
+            document.querySelectorAll(".ia-body li.show table tbody").forEach(tbody => {
                 const nodata = tbody.querySelector("tr.nodata");
                 nodata && nodata.remove();
                 let vnum = 0;
@@ -246,10 +246,10 @@ const ia = {
         },
         cate: function(){
             // console.log("ia.total.cate();");
-            document.querySelectorAll(".ia-body dd").forEach( dd => {
-                const trNum = dd.querySelectorAll("table tbody tr:not(.nodata)").length;
-                // console.log(trNum , dd.previousElementSibling );
-                dd.querySelector(".bt").setAttribute("data-num",trNum);
+            document.querySelectorAll(".ia-body .list>li").forEach( li => {
+                const trNum = li.querySelectorAll("table tbody tr:not(.nodata)").length;
+                // console.log(trNum , li.previousElementSibling );
+                li.querySelector(".bt").setAttribute("data-num",trNum);
             });
         }
     },
@@ -311,7 +311,7 @@ const ia = {
             this.evt();
         },
         evt: function(){
-            document.querySelectorAll(".ia-body .list>dd .bt").forEach( (bt,i) => {
+            document.querySelectorAll(".ia-body .list>li .bt").forEach( (bt,i) => {
                 i++;
                 bt.setAttribute("onclick","ia.menu.act("+ i +")");
                 bt.addEventListener("click", a => ia.veiwall.set("close"));
@@ -326,10 +326,10 @@ const ia = {
                 idx == i+1 ? li.classList.add("active") : li.classList.remove("active");
             });
             document.querySelector(".fixs .selt option[value='"+idx+"']").selected = true;
-            document.querySelectorAll(".ia-body .list dd").forEach( (dt,i) => {
-                const dd = dt;
-                idx == i+1 ? dt.classList.add("active") : dt.classList.remove("active");
-                idx == i+1 ? dd.classList.add("active","show") : dd.classList.remove("active","show");
+            document.querySelectorAll(".ia-body .list>li").forEach( (li,i) => {
+                const dd = li;
+                // idx == i+1 ? li.classList.add("active") : li.classList.remove("active");
+                idx == i+1 ? li.classList.add("active","show") : li.classList.remove("active","show");
             });
             ia.data.set("ia-"+ia.plat(),{menu:idx});
             ia.total.set();
@@ -337,12 +337,12 @@ const ia = {
         set: function(){
             let menu = "";
             let selt = "";
-            document.querySelectorAll(".ia-body .list>dd").forEach( (dt,idx) => {
+            document.querySelectorAll(".ia-body .list>li").forEach( (li,idx) => {
                 idx++;
-                const bt = dt.querySelector(".bt");
+                const bt = li.querySelector(".bt");
                 let count = bt.getAttribute("data-num");
                 count > 0 ? count = ' ['+count+']' : count = '';
-                menu += '<li><a class="bt" href="javascript:;" data-num="'+count+'" >'+bt.innerHTML+'</a></li>';
+                menu += '<li><button class="bt" href="javascript:;" data-num="'+count+'" >'+bt.innerHTML+'</button></li>';
                 selt += '<option value="'+idx+'">'+bt.innerText+''+count+'</option>';
             });
             // console.log(selt,menu);
@@ -406,7 +406,7 @@ const ia = {
                 body.classList.add("all");
                 vbtn.innerText = "메뉴닫기";
                 ia.data.set("ia-"+ia.plat(),{menu:0});
-                document.querySelectorAll(".list dd").forEach( dd => dd.classList.add("show") );
+                document.querySelectorAll(".list>li").forEach( dd => dd.classList.add("show") );
             }
             if(opt=="close"){
                 body.classList.remove("all");
