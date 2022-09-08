@@ -91,11 +91,11 @@ const ia = {
                 Object.keys(ia.opts.label).forEach( k => tr.querySelector("td."+k).setAttribute("data-label",ia.opts.label[k]) );
             });
     
-            const dtd = document.querySelectorAll(".ia-body .list>dt");
+            const dtd = document.querySelectorAll(".ia-body .list>dd");
             dtd.forEach( (e,i) => {
                 i++;
-                e.classList.add("tm"+i);
-                e.nextElementSibling.classList.add("dd"+i);
+                // e.classList.add("tm"+i);
+                e.classList.add("dd"+i);
             });
             // console.log( "ia.stats.set();" );
         }
@@ -249,7 +249,7 @@ const ia = {
             document.querySelectorAll(".ia-body dd").forEach( dd => {
                 const trNum = dd.querySelectorAll("table tbody tr:not(.nodata)").length;
                 // console.log(trNum , dd.previousElementSibling );
-                dd.previousElementSibling.querySelector("a").setAttribute("data-num",trNum);
+                dd.querySelector(".bt").setAttribute("data-num",trNum);
             });
         }
     },
@@ -311,12 +311,12 @@ const ia = {
             this.evt();
         },
         evt: function(){
-            document.querySelectorAll(".ia-body .list>dt a").forEach( (bt,i) => {
+            document.querySelectorAll(".ia-body .list>dd .bt").forEach( (bt,i) => {
                 i++;
                 bt.setAttribute("onclick","ia.menu.act("+ i +")");
                 bt.addEventListener("click", a => ia.veiwall.set("close"));
             } );
-            document.querySelectorAll(".navs .menu>li a").forEach( (bt,i) => bt.addEventListener("click", a => this.act( i+1 ) ) );
+            document.querySelectorAll(".navs .menu>li .bt").forEach( (bt,i) => bt.addEventListener("click", a => this.act( i+1 ) ) );
             document.querySelector(".fixs .selt").addEventListener("change", sel => this.act(sel.target.value) );
         },
         act: function(idx){
@@ -326,8 +326,8 @@ const ia = {
                 idx == i+1 ? li.classList.add("active") : li.classList.remove("active");
             });
             document.querySelector(".fixs .selt option[value='"+idx+"']").selected = true;
-            document.querySelectorAll(".ia-body .list dt").forEach( (dt,i) => {
-                const dd = dt.nextElementSibling;
+            document.querySelectorAll(".ia-body .list dd").forEach( (dt,i) => {
+                const dd = dt;
                 idx == i+1 ? dt.classList.add("active") : dt.classList.remove("active");
                 idx == i+1 ? dd.classList.add("active","show") : dd.classList.remove("active","show");
             });
@@ -337,12 +337,13 @@ const ia = {
         set: function(){
             let menu = "";
             let selt = "";
-            document.querySelectorAll(".ia-body .list>dt").forEach( (dt,idx) => {
+            document.querySelectorAll(".ia-body .list>dd").forEach( (dt,idx) => {
                 idx++;
-                let count = dt.querySelector("a[data-num]").getAttribute("data-num");
+                const bt = dt.querySelector(".bt");
+                let count = bt.getAttribute("data-num");
                 count > 0 ? count = ' ['+count+']' : count = '';
-                menu += '<li>'+dt.innerHTML+'</li>';
-                selt += '<option value="'+idx+'">'+dt.querySelector("a").innerText+''+count+'</option>';
+                menu += '<li><a class="bt" href="javascript:;" data-num="'+count+'" >'+bt.innerHTML+'</a></li>';
+                selt += '<option value="'+idx+'">'+bt.innerText+''+count+'</option>';
             });
             // console.log(selt,menu);
             const menuHtml = '<ul class="menu">'+menu+'</ul>';
