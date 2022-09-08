@@ -1,46 +1,52 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-	<meta charset="utf-8">
-	<title>IA</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link href="./favicon.ico" rel="shrtcut icon">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-	<meta name="theme-color" content="#212121">
-	<link rel="stylesheet" href="./ia.css?v=1">
+    <meta charset="utf-8">
+    <title>IA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="./favicon.ico" rel="shrtcut icon">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="theme-color" content="#212121">
+    <link rel="stylesheet" href="./ia.css?v=1">
 </head>
 <body>
-	<div class="ia-wrap">
-		
-		<include src="./ia_head.html"></include>
+    <div class="ia-wrap">
+        
+        <include src="./ia_head.html"></include>
 
-		<div class="ia-body" id="ia-body">
-			<nav class="navs"></nav>
-			<ul class="list">
-				<li>
-					<button class="bt">메인/공통/기타</button>  <include src="./ia_cate_1.html"></include>
-				</li>
-				<li>
-					<button class="bt">회원/로그인</button>     <include src="./ia_cate_2.html"></include>
-				</li>
-				<li>
-					<button class="bt">마이페이지</button> 		<include src="./ia_cate_3.html"></include>
-				</li>
-				<li>
-					<button class="bt">고객센터</button>  		<include src="./ia_cate_4.html"></include>
-				</li>
-				<li>
-					<button class="bt">상품</button>  			<include src="./ia_cate_1.html"></include>
-				</li>
-				<li>
-					<button class="bt">협력사</button>  		<include src="./ia_cate_2.html"></include>
-				</li>
-			</ul>
-			<nav class="fixs"></nav>
-		</div>
+        <div class="ia-body" id="ia-body">
+            <nav class="navs"></nav>
+            <ul class="list">
+                <li>
+                    <button class="bt">메인/공통/기타</button>
+                    <include src="./ia_cate_1.html" data-include-opt='{"title":"메인/공통/기타"}'></include>
+                </li>
+                <li>
+                    <button class="bt">회원/로그인</button>
+                    <include src="./ia_cate_2.html" data-include-opt='{"title":"회원/로그인"}'></include>
+                </li>
+                <li>
+                    <button class="bt">마이페이지</button>
+                    <include src="./ia_cate_3.html" data-include-opt='{"title":"마이페이지"}'></include>
+                </li>
+                <li>
+                    <button class="bt">고객센터</button>
+                    <include src="./ia_cate_4.html" data-include-opt='{"title":"고객센터"}'></include>
+                </li>
+                <li>
+                    <button class="bt">상품</button>
+                    <include src="./ia_cate_1.html" data-include-opt='{"title":"상품"}'></include>
+                </li>
+                <li>
+                    <button class="bt">협력사</button>
+                    <include src="./ia_cate_2.html" data-include-opt='{"title":"협력사"}'></include>
+                </li>
+            </ul>
+            <nav class="fixs"></nav>
+        </div>
 
-	</div>
-	
-	<script src="./ia.js?v=1"></script>
+    </div>
+    
+    <script src="./ia.js?v=1"></script>
 </body>
 </html>

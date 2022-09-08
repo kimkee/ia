@@ -322,7 +322,7 @@ const ia = {
         act: function(idx){
             // console.log(idx);
             document.querySelector(".ia-body").classList.remove("all");
-            document.querySelectorAll(".navs .menu li").forEach( (li,i) => {
+            document.querySelectorAll(".navs .menu>li").forEach( (li,i) => {
                 idx == i+1 ? li.classList.add("active") : li.classList.remove("active");
             });
             document.querySelector(".fixs .selt option[value='"+idx+"']").selected = true;
@@ -342,7 +342,7 @@ const ia = {
                 const bt = li.querySelector(".bt");
                 let count = bt.getAttribute("data-num");
                 count > 0 ? count = ' ['+count+']' : count = '';
-                menu += '<li><button class="bt" href="javascript:;" data-num="'+count+'" >'+bt.innerHTML+'</button></li>';
+                menu += '<li><button class="bt" data-num="'+count+'">'+bt.innerHTML+'</button></li>';
                 selt += '<option value="'+idx+'">'+bt.innerText+''+count+'</option>';
             });
             // console.log(selt,menu);
@@ -358,19 +358,19 @@ const ia = {
             this.evt();
         },
         evt: function(){
-            document.querySelectorAll("table.tbl td.memo .bt.more").forEach( el => el.addEventListener("click", bt => {
+            document.querySelectorAll("table.tbl td.memo .bt-more").forEach( el => el.addEventListener("click", bt => {
                 const td = bt.target.closest("td").classList;
                 td.contains("open") ? td.remove("open") : td.add("open");
             }));
             
-            document.querySelectorAll("table.tbl th.memo .bt.more").forEach( el => el.addEventListener("click", bt => {
+            document.querySelectorAll("table.tbl th.memo .bt-more").forEach( el => el.addEventListener("click", bt => {
                 document.querySelectorAll("table.tbl").forEach( tbl => {
                     if( tbl.classList.contains("open") ) {
                         tbl.classList.remove("open");
-                        tbl.querySelectorAll("td.memo").forEach( memo => memo.classList.remove("open"));
+                        tbl.querySelectorAll("td.memo").forEach( td => td.classList.remove("open"));
                     }else{
                         tbl.classList.add("open");
-                        tbl.querySelectorAll("td.memo").forEach( memo => memo.classList.add("open"));
+                        tbl.querySelectorAll("td.memo").forEach( td => td.classList.add("open"));
                     }
                 });
             }));
@@ -381,7 +381,7 @@ const ia = {
                 const mnum = memo.querySelectorAll("p").length;
                 if (mnum >= 2 || memo.tagName == "TH") {
                     memo.classList.add("more");
-                    memo.innerHTML  = '<button class="bt more" type="button">+</button>'+ msgs;
+                    memo.innerHTML  = '<button class="bt-more" type="button">+</button>'+ msgs;
                 }else{
                     memo.classList.remove("more");
                     memo.innerHTML  = msgs;
