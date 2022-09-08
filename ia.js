@@ -54,9 +54,10 @@ const ia = {
             }
         },
     },
-    plat: function(){
-        let path = location.pathname.split("/");
-        path = "static";
+    plat: e => {
+        let path = location.pathname.split("/")[1] ;
+        const active = {"mo":"mo", "pc":"pc", "admin":"admin"};
+        if( !Object.hasOwnProperty.call(active, path) ) path = "mo";
         return path;
     },
     stats: {
@@ -96,7 +97,7 @@ const ia = {
                 e.classList.add("tm"+i);
                 e.nextElementSibling.classList.add("dd"+i);
             });
-            console.log( "ia.stats.set();" );
+            // console.log( "ia.stats.set();" );
         }
     },
     mact: {
@@ -104,21 +105,17 @@ const ia = {
             this.set();
         },
         set:function(num){
-            // num = JSON.parse( localStorage.getItem("iaMenuSet") )  ;
-            let path = location.pathname.split("/");
-            path = "static";
-            const active = {"static":"static", "mo":"mo", "pc":"pc", "admin":"admin"};
-            // console.log(path ,active , active[path]);
-            const liact = document.querySelector(".ia-head .link>li."+active[path]);
+            let path = ia.plat();
+            // console.log(path);
+            const liact = document.querySelector(".ia-head .link>li."+path);
             liact && liact.classList.add("active");
-            ia.data.set("ia-"+ia.plat(),{plat:active[path]});
-            document.querySelector("body").classList.add(active[path]);
-            
-            num = ia.data.get("ia-"+ia.plat(),"menu") ;
-    
+            ia.data.set("ia-"+path,{plat:path});
+            document.querySelector("body").classList.add(path);           
+            num = ia.data.get("ia-"+path,"menu") ;
             if( num == 0 ) {
                 ia.veiwall.set("open");
             } else {
+                ia.veiwall.set("close");
                 if( !num ) {num = 1;} 
                 ia.menu.act(num);
             }
@@ -141,7 +138,7 @@ const ia = {
             // console.log(hdHeight , nvHeight);
             document.querySelector(".ia-wrap").style.paddingTop = hdHeight+"rem";
             document.querySelector(".ia-body").style.paddingTop = nvHeight+"rem";
-            document.querySelector(".fixnav").style.top = hdHeight+nvHeight+7+"rem";
+            document.querySelector(".ia-body .fixnav").style.top = hdHeight+nvHeight+"rem";
             document.querySelector(".ia-body .navs").style.top = hdHeight+"rem";
         }
     },
@@ -149,16 +146,16 @@ const ia = {
         init: function(){
             ia.appendHtml( document.querySelector(".navs") , this.els );
             this.evt();
-            const theme = ia.data.get("ia","theme"); //
+            const theme = ia.data.get("ia","theme");
             this.them(theme);
         },
         els:'<nav class="fixnav">'+
-                '<button type="button" class="bt viewall">전체보기</button>'+
-                '<button type="button" class="bt them">🌚</button>'+
-                '<button type="button" class="bt top">▲</button>'+
+                '<button type="button" class="bt vall"></button>'+
+                '<button type="button" class="bt them"></button>'+
+                '<button type="button" class="bt tops"></button>'+
             '</nav>',
         evt: function(){
-            document.querySelector(".fixnav .bt.top").addEventListener("click", e => this.gotop(e.target) );
+            document.querySelector(".fixnav .bt.tops").addEventListener("click", e => this.gotop(e.target) );
             document.querySelector(".fixnav .bt.them").addEventListener("click", e => ia.data.get("ia","theme") == "dark" ? this.them("light") : this.them("dark"));
         },
         gotop: function(el){
@@ -170,8 +167,8 @@ const ia = {
             const tclr = document.querySelector('[name="theme-color"]');
             type = !type ? "dark" : type; 
             bthm.innerText = type == "dark" ? "🌚" : "🌞";
-            if( type == "dark" ){ bcls.add("is-dark");    tclr.setAttribute("content","#212121"); }
-            if( type == "light"){ bcls.remove("is-dark"); tclr.setAttribute("content","#ffffff"); }
+            type == "dark" && bcls.add("is-dark");    tclr.setAttribute("content","#212121");
+            type == "light"&& bcls.remove("is-dark"); tclr.setAttribute("content","#ffffff");
             ia.data.set("ia",{theme:type});
         }
     },
@@ -180,9 +177,7 @@ const ia = {
             if( document.querySelector(".ia-loading") ) return;
             const els = 
             '<div class="ia-loading">'+
-                '<div class="bx">'+
-                    '<em><i></i></em>'+
-                '</div>'+
+                '<div class="bx"><em><i></i></em></div>'+
             '</div>';
             ia.appendHtml( document.querySelector("body") , els );
             document.querySelector("body").classList.add("is-loading");
@@ -396,20 +391,21 @@ const ia = {
             this.evt();
         },
         evt: function(){           
-            document.querySelector(".fixnav .bt.viewall").addEventListener("click", bt => {
+            document.querySelector(".fixnav .bt.vall").addEventListener("click", bt => {
                 const isAll = document.querySelector(".ia-body").classList.contains("all");
                 isAll ? this.set("close") : this.set("open");
             });
         },
         set: function(opt){
             const body = document.querySelector(".ia-body");
-            const vbtn = document.querySelector(".fixnav .bt.viewall");
+            const vbtn = document.querySelector(".fixnav .bt.vall");
             if(opt=="open"){
                 body.classList.add("all");
                 vbtn.innerText = "메뉴닫기";
                 ia.data.set("ia-"+ia.plat(),{menu:0});
-                document.querySelectorAll(".list dd").forEach( dd => dd.classList.add("show") );                
-            }else{
+                document.querySelectorAll(".list dd").forEach( dd => dd.classList.add("show") );
+            }
+            if(opt=="close"){
                 body.classList.remove("all");
                 vbtn.innerText = "전체보기";
                 const act =  document.querySelectorAll(".ia-body .navs .menu>li.active").length;
