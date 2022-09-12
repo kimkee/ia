@@ -472,5 +472,63 @@ const ia = {
 };
 ia.loading.show();
 ia.include.set();
-ia.include.load( e => ia.init() );
+let data = [];
+ia.include.load( e => {
+    document.querySelectorAll(".ia-body .list>li").forEach( (li,idx) => {
+       
+        data[idx] =  {"lev1":li.querySelector(".bt").innerText} ;
+        data[idx]['page'] = [];
+        li.querySelectorAll("tbody tr").forEach( (tr , i) => {
+            let stat = tr.querySelector("td.stat").innerText;
+            let name = tr.querySelector("td.name").innerText;
+            let lev2 = tr.querySelector("td.lev2").innerText;
+            let lev3 = tr.querySelector("td.lev3").innerText;
+            let lev4 = tr.querySelector("td.lev4").innerText;
+            let lev5 = tr.querySelector("td.lev5").innerText;
+            let tits = tr.querySelector("td.tits").innerText;
+            let code = tr.querySelector("td.code").innerText;
+            let date = tr.querySelector("td.date").innerText;
+            let urls = tr.querySelector("td.urls>a").getAttribute("href");
+            let memo = [];
+            tr.querySelectorAll("td.memo p").forEach( p => memo.push(p.innerText) );
+            data[idx].page[i] = {
+                "numb":i+1,"lev2":lev2,"lev3":lev3,"lev4":lev4,"lev5":lev5,
+                "tits":tits,"code":code,"date":date,
+                "stat":stat,"name":name,"urls":urls,"memo":memo,
+            };
+
+        });
+        console.log(data[idx].lev1);
+        console.table(data[idx].page);
+    });
+    ia.init()
+    console.log(data);
+    ia.data.set("ia-data",data);
+});
+
+// let test = [
+//     {
+//         "분류": "메인/공통/기타",
+//         "page": [
+//             {"stat": "진행", "name": "김기현", "urls": "../../html/mmm/abcd.html", "memo": "메모입니다111."},
+//             {"stat": "완료", "name": "홍길동", "urls": "../../html/mmm/abcd.html", "memo": "메모입니다222."},
+//             {"stat": "완료", "name": "홍길동", "urls": "../../html/mmm/abcd.html", "memo": "메모입니다222."},
+//         ]
+//     },
+//     {
+//         "분류": "회원/로그인",
+//         "page": [
+//             {"stat": "대기", "name": "미지정", "urls": "../../html/mmm/abcd.html", "memo": "메모입니다333."},
+//             {"stat": "검수", "name": "김선생", "urls": "../../html/mmm/abcd.html", "memo": "메모입니다444."},
+//         ]
+//     },
+//     {
+//         "분류": "마이페이지",
+//         "page": [
+//             {"stat": "완료", "name": "홍길동", "urls": "../../html/mmm/abcd.html", "memo": ""},
+//             {"stat": "삭제", "name": "김기현", "urls": "../../html/mmm/abcd.html", "memo": "메모입니다555."},
+//         ]
+//     },
+// ];
+// console.log("구라스 ", test);
 
