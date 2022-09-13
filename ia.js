@@ -24,8 +24,7 @@ const ia = {
             "김기현", "홍길동", "김선생", "미지정",
         ],
         stxt: { /* 상태값 class */
-            "대기": "sty", "진행": "ing", "검수": "chk",
-            "완료": "com", "삭제": "del", "우선": "wan",
+            "대기": "sty", "진행": "ing", "검수": "chk", "완료": "com", "삭제": "del", "우선": "wan",
         },
         label: { /* td라벨 */
             numb: "No", lev2: "Lv.2", lev3: "Lv.3", lev4: "Lv.4", lev5: "Lv.5",
@@ -42,16 +41,8 @@ const ia = {
             localStorage.setItem(name, JSON.stringify(news) );
         },
         get: function(name,key){ // console.log(key);
-            let data = JSON.parse( localStorage.getItem(name) );
-            if( key != undefined ){
-                try{
-                    return data[key];
-                }catch(e) {
-                    return false;
-                }
-            }else{
-                return data;
-            }
+            let data = JSON.parse( localStorage.getItem(name) ) || {};
+            return data[key];
         },
     },
     plat: e => {
@@ -91,13 +82,6 @@ const ia = {
                 Object.keys(ia.opts.label).forEach( k => tr.querySelector("td."+k).setAttribute("data-label",ia.opts.label[k]) );
             });
     
-            const dtd = document.querySelectorAll(".ia-body .list>li");
-            dtd.forEach( (e,i) => {
-                i++;
-                // e.classList.add("tm"+i);
-                e.classList.add("dd"+i);
-            });
-            // console.log( "ia.stats.set();" );
         }
     },
     mact: {
@@ -149,11 +133,11 @@ const ia = {
             const theme = ia.data.get("ia","theme");
             this.them(theme);
         },
-        els:'<nav class="fixnav">'+
-                '<button type="button" class="bt vall"></button>'+
-                '<button type="button" class="bt them"></button>'+
-                '<button type="button" class="bt tops"></button>'+
-            '</nav>',
+        els:`<nav class="fixnav">
+                <button type="button" class="bt vall"></button>
+                <button type="button" class="bt them"></button>
+                <button type="button" class="bt tops"></button>
+            </nav>`,
         evt: function(){
             document.querySelector(".fixnav .bt.tops").addEventListener("click", e => this.gotop(e.target) );
             document.querySelector(".fixnav .bt.them").addEventListener("click", e => ia.data.get("ia","theme") == "dark" ? this.them("light") : this.them("dark"));
@@ -176,9 +160,7 @@ const ia = {
         show: function () {
             if( document.querySelector(".ia-loading") ) return;
             const els = 
-            '<div class="ia-loading">'+
-                '<div class="bx"><em><i></i></em></div>'+
-            '</div>';
+            `<div class="ia-loading"><div class="bx"><em><i></i></em></div></div>`;
             ia.appendHtml( document.querySelector("body") , els );
             document.querySelector("body").classList.add("is-loading");
         },
@@ -238,8 +220,8 @@ const ia = {
                         tr.querySelector("td.numb").innerText = lnum;
                     }
                 });
-                tbody.setAttribute("trnum",vnum);
-                const notr = '<tr class="nodata"><td colspan="12">내역이 없습니다.</td></tr>';
+                tbody.setAttribute("trnum", vnum);
+                const notr = `<tr class="nodata"><td colspan="12">내역이 없습니다.</td></tr>`;
                 vnum < 1 && ia.appendHtml(tbody,notr);
             });
             // console.log("ia.total.set();");
@@ -247,59 +229,52 @@ const ia = {
         cate: function(){
             // console.log("ia.total.cate();");
             document.querySelectorAll(".ia-body .list>li").forEach( li => {
-                const trNum = li.querySelectorAll("table tbody tr:not(.nodata)").length;
-                // console.log(trNum , li.previousElementSibling );
-                li.querySelector(".bt").setAttribute("data-num",trNum);
+                const trs = li.querySelectorAll("table tbody tr:not(.nodata)").length;
+                li.querySelector(".bt").setAttribute("data-num",trs);
             });
         }
     },
     user: {
         init: function(){
             this.evt();
-            this.set();
             this.load();
+            this.sets();
         },
         evt: function(){
-            document.querySelectorAll(".ia-head .data select").forEach( select => {
-                select.addEventListener("change", e => {
-                    // console.log("로딩쇼");
-                    ia.loading.show();
-                    const val1 = document.querySelector(".fillter").value;
-                    const val2 = document.querySelector(".statter").value;
-                    ia.data.set("ia-"+ia.plat(), {user: val1});
-                    ia.data.set("ia-"+ia.plat(), {stat: val2});
-                    setTimeout(() => this.filt(val1, val2),50); 
-                });
-            });
-        },
-        set: function(){
-            let optft = '<option value="all">작업자</option>';
-            Object.keys(ia.opts.usrs).forEach( k => optft += '<option value="'+ia.opts.usrs[k]+'">'+ia.opts.usrs[k]+'</option>' );
-            document.querySelector(".fillter").innerHTML = optft;
-
-            let optst = '<option value="all">상태</option>';
-            Object.keys(ia.opts.stxt).forEach( k => optst += '<option value="'+k+'">'+k+'</option>' );
-            document.querySelector(".statter").innerHTML = optst;
+            document.querySelectorAll(".ia-head .data select").forEach( sel => sel.addEventListener("change", e => this.sets() ));
         },
         load: function(){
-            const opt1 = ia.data.get("ia-"+ia.plat(),"user") || "all" ;
-            const opt2 = ia.data.get("ia-"+ia.plat(),"stat") || "all";
-            this.filt(opt1,opt2);
+            let optft = `<option value="all">작업자</option>`;
+            let optst = `<option value="all">상태</option>`;
+            Object.keys(ia.opts.usrs).forEach( k => optft += `<option value="${ia.opts.usrs[k]}">${ia.opts.usrs[k]}</option>` );
+            Object.keys(ia.opts.stxt).forEach( k => optst += `<option value="${k}">${k}</option>` );
+            document.querySelector(".fillter").innerHTML = optft;
+            document.querySelector(".statter").innerHTML = optst;
+           
+            const opt1 = ia.data.get("ia-"+ia.plat(), "user") || "all";
+            const opt2 = ia.data.get("ia-"+ia.plat(), "stat") || "all";
             document.querySelector(".fillter").value = opt1;
             document.querySelector(".statter").value = opt2;
+        },
+        sets: function(){
+            const opt1 = document.querySelector(".fillter").value;
+            const opt2 = document.querySelector(".statter").value;
+            ia.data.set("ia-"+ia.plat(), {user: opt1});
+            ia.data.set("ia-"+ia.plat(), {stat: opt2});
+            this.filt(opt1, opt2);
         },
         filt: function(opt1,opt2){
             document.querySelectorAll(".ia-body table.tbl tbody tr").forEach( tr => {
                 const tname = tr.querySelector("td.name");
                 const tstat = tr.querySelector("td.stat");
-                const name = tname && tname.innerText ;
-                const stat = tstat && tstat.innerText ;
+                const name = tname && tname.innerText;
+                const stat = tstat && tstat.innerText;
+
                 tr.style.display = "none";
-                if( opt1 == name  && opt2 == stat  ){ tr.style.display = "table-row"; }
-                if( opt1 == name  && opt2 == "all" ){ tr.style.display = "table-row"; }
-                if( opt1 == "all" && opt2 == stat  ){ tr.style.display = "table-row"; }
-                if( opt1 == "all" && opt2 == "all" ){ tr.style.display = "table-row"; }
-                // console.log( opt1,opt2,name,stat   , tr.style.display);
+                opt1 == name  && opt2 == stat  ? tr.style.display = "table-row" : null ;
+                opt1 == name  && opt2 == "all" ? tr.style.display = "table-row" : null ;
+                opt1 == "all" && opt2 == stat  ? tr.style.display = "table-row" : null ;
+                opt1 == "all" && opt2 == "all" ? tr.style.display = "table-row" : null ;
             });
             ia.total.set();
             // console.log("ia.usr.filt()");
@@ -327,29 +302,25 @@ const ia = {
             });
             document.querySelector(".fixs .selt option[value='"+idx+"']").selected = true;
             document.querySelectorAll(".ia-body .list>li").forEach( (li,i) => {
-                const dd = li;
-                // idx == i+1 ? li.classList.add("active") : li.classList.remove("active");
                 idx == i+1 ? li.classList.add("active","show") : li.classList.remove("active","show");
             });
             ia.data.set("ia-"+ia.plat(),{menu:idx});
             ia.total.set();
         },
         set: function(){
-            let menu = "";
-            let selt = "";
+            let menu = ``;
+            let selt = ``;
             document.querySelectorAll(".ia-body .list>li").forEach( (li,idx) => {
                 idx++;
                 const bt = li.querySelector(".bt");
-                let count = bt.getAttribute("data-num");
-                count > 0 ? count = ' ['+count+']' : count = '';
-                menu += '<li><button class="bt" data-num="'+count+'">'+bt.innerHTML+'</button></li>';
-                selt += '<option value="'+idx+'">'+bt.innerText+''+count+'</option>';
+                let nums = bt.getAttribute("data-num");
+                nums = nums > 0 ? `${nums}` : ``;
+                menu += `<li><button class="bt" data-num="${nums}">${bt.innerHTML}</button></li>`;
+                selt += `<option value="${idx}">${bt.innerText} [${nums}]</option>`;
             });
             // console.log(selt,menu);
-            const menuHtml = '<ul class="menu">'+menu+'</ul>';
-            const seltHtml = '<select class="selt">'+selt+'</select>';
-            document.querySelector(".ia-body .navs").innerHTML = menuHtml;
-            document.querySelector(".ia-body .fixs").innerHTML = seltHtml;
+            document.querySelector(".ia-body .navs").innerHTML = `<ul class="menu">${menu}</ul>`;
+            document.querySelector(".ia-body .fixs").innerHTML = `<select class="selt">${selt}</select>`;
         }
     },
     memo: {
@@ -377,14 +348,14 @@ const ia = {
         },
         set: function(){
             document.querySelectorAll(".ia-body table.tbl .memo").forEach( memo => {
-                const msgs = '<div class="msgs">'+ memo.innerHTML +'</div>';
+                const msgs = `<div class="msgs">${memo.innerHTML}</div>`;
                 const mnum = memo.querySelectorAll("p").length;
                 if (mnum >= 2 || memo.tagName == "TH") {
                     memo.classList.add("more");
-                    memo.innerHTML  = '<button class="bt-more" type="button">+</button>'+ msgs;
+                    memo.innerHTML = `<button class="bt-more" type="button"></button>`+ msgs;
                 }else{
                     memo.classList.remove("more");
-                    memo.innerHTML  = msgs;
+                    memo.innerHTML = msgs;
                 }
             });
         }
@@ -395,24 +366,25 @@ const ia = {
         },
         evt: function(){           
             document.querySelector(".fixnav .bt.vall").addEventListener("click", bt => {
-                const isAll = document.querySelector(".ia-body").classList.contains("all");
+                const isAll = bt.target.closest(".ia-body").classList.contains("all");
                 isAll ? this.set("close") : this.set("open");
             });
         },
         set: function(opt){
             const body = document.querySelector(".ia-body");
             const vbtn = document.querySelector(".fixnav .bt.vall");
-            if(opt=="open"){
+            if( opt == "open" ){
                 body.classList.add("all");
                 vbtn.innerText = "메뉴닫기";
                 ia.data.set("ia-"+ia.plat(),{menu:0});
                 document.querySelectorAll(".list>li").forEach( dd => dd.classList.add("show") );
             }
-            if(opt=="close"){
+            if( opt == "close" ){
                 body.classList.remove("all");
                 vbtn.innerText = "전체보기";
-                const act =  document.querySelectorAll(".ia-body .navs .menu>li.active").length;
-                act == 0 && ia.menu.act(1) ;
+                const acts = document.querySelectorAll(".ia-body .navs .menu>li.active").length;
+                document.querySelectorAll(".list>li:not(.active)").forEach( dd => dd.classList.remove("show") );
+                acts == 0 && ia.menu.act(1);
             }
             ia.total.set();
             ia.update();
@@ -505,32 +477,3 @@ const setData = e =>{
     console.log(data);
     ia.data.set("ia-data",data);
 };
-
-/*
-let test = [
-    {
-        "lev1": "메인/공통/기타",
-        "page": [
-            {"stat": "진행", "name": "김기현", "urls": "../../html/mmm/abcd.html", "memo": ["메모입니다111.","메모입니다222."]},
-            {"stat": "완료", "name": "홍길동", "urls": "../../html/mmm/abcd.html", "memo": ["메모입니다222."]},
-            {"stat": "완료", "name": "홍길동", "urls": "../../html/mmm/abcd.html", "memo": ["메모입니다222."]},
-        ]
-    },
-    {
-        "lev1": "회원/로그인",
-        "page": [
-            {"stat": "대기", "name": "미지정", "urls": "../../html/mmm/abcd.html", "memo": ["메모입니다333."]},
-            {"stat": "검수", "name": "김선생", "urls": "../../html/mmm/abcd.html", "memo": ["메모입니다444."]},
-        ]
-    },
-    {
-        "lev1": "마이페이지",
-        "page": [
-            {"stat": "완료", "name": "홍길동", "urls": "../../html/mmm/abcd.html", "memo": [""]},
-            {"stat": "삭제", "name": "김기현", "urls": "../../html/mmm/abcd.html", "memo": ["메모입니다555."]},
-        ]
-    },
-];
-console.log("구라스 ", test);
-*/
-
