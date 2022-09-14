@@ -178,20 +178,19 @@ const ia = {
         },
         set: function(){
             ia.loading.show();
-            setTimeout( e => ia.loading.hide(), 200 );
+            setTimeout( e => ia.loading.hide(), 400 );
             
             const count = {
                 tots: { tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, wan: 0, pct: 0 },
                 user: { tot: 0, sty: 0, ing: 0, chk: 0, com: 0, del: 0, wan: 0, pct: 0 }
             };
-            document.querySelectorAll(".ia-body  table.tbl tbody tr:not(.nodata)").forEach( (tr,idx) => {
+            document.querySelectorAll(".ia-body  table.tbl tbody tr:not(.nodata)").forEach( tr => {
                 const sxt = tr.querySelector("td.stat");
                 const txt = sxt.innerText;
                 const ttt = ia.opts.stxt[txt];
 
                 count.tots.tot++;
                 count.tots[ttt]++;
-                // if( tr.is(":visible") ){ 
                 if( tr.style.display == "table-row" && tr.closest("li.show")  ){ 
                     count.user.tot++;
                     count.user[ttt]++;
@@ -288,7 +287,7 @@ const ia = {
         evt: function(){
             document.querySelectorAll(".ia-body .list>li .bt").forEach( (bt,i) => {
                 i++;
-                bt.setAttribute("onclick","ia.menu.act("+ i +")");
+                bt.setAttribute("onclick",`ia.menu.act(${i})`);
                 bt.addEventListener("click", a => ia.veiwall.set("close"));
             } );
             document.querySelectorAll(".navs .menu>li .bt").forEach( (bt,i) => bt.addEventListener("click", a => this.act( i+1 ) ) );
@@ -333,7 +332,7 @@ const ia = {
                 const td = bt.target.closest("td").classList;
                 td.contains("open") ? td.remove("open") : td.add("open");
             }));
-            
+
             document.querySelectorAll("table.tbl th.memo .bt-more").forEach( el => el.addEventListener("click", bt => {
                 document.querySelectorAll("table.tbl").forEach( tbl => {
                     if( tbl.classList.contains("open") ) {
@@ -465,8 +464,8 @@ const setData = e =>{
             const memo = [];
             tr.querySelectorAll("td.memo p").forEach( p => memo.push(p.innerText) );
             data[idx].page[i] = {
-                "numb": i +1, "lev2": lev2, "lev3": lev3, "lev4": lev4, "lev5": lev5, 
-                "tits": tits, "code": code, "date": date, 
+                "numb": i +1, "lev2": lev2, "lev3": lev3, "lev4": lev4, "lev5": lev5,
+                "tits": tits, "code": code, "date": date,
                 "stat": stat, "name": name, "urls": urls, "memo": memo,
             };
         });
