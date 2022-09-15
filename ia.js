@@ -128,7 +128,7 @@ const ia = {
     },
     fixnav: {
         init: function(){
-            ia.appendHtml( document.querySelector(".fixs") , this.els );
+            document.querySelector(".fixs").insertAdjacentHTML("beforeend",this.els);
             this.evt();
             const theme = ia.data.get("ia","theme");
             this.them(theme);
@@ -161,7 +161,7 @@ const ia = {
             if( document.querySelector(".ia-loading") ) return;
             const els = 
             `<div class="ia-loading"><div class="bx"><em><i></i></em></div></div>`;
-            ia.appendHtml( document.querySelector("body") , els );
+            document.querySelector("body").insertAdjacentHTML("afterbegin",els);
             document.querySelector("body").classList.add("is-loading");
         },
         hide: function () {
@@ -221,7 +221,8 @@ const ia = {
                 });
                 tbody.setAttribute("trnum", vnum);
                 const notr = `<tr class="nodata"><td colspan="12">내역이 없습니다.</td></tr>`;
-                vnum < 1 && ia.appendHtml(tbody,notr);
+                vnum < 1 && tbody.insertAdjacentHTML("beforeend",notr);
+                
             });
             // console.log("ia.total.set();");
         },
