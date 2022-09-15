@@ -77,7 +77,8 @@ const ia = {
                     e.target.closest("tr").classList.add("active");
                 });
                 tr.addEventListener("click", e => {
-                    e.target != tr.querySelector("button") ? tr.classList.toggle("active") : null ;
+                    console.log(e.target.tagName , e.target != e.target.tagName != "BUTTON" );
+                    e.target.tagName != "BUTTON" ? tr.classList.toggle("active") : null ;
                 });
                 urls.querySelector(".bt-copy").addEventListener("click", bt => {
                     const furl = link.innerText.split("/").reverse();

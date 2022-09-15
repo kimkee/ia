@@ -214,9 +214,9 @@ body.pc .ia-head .link>li.active .lk{background: #1065a5;}
 .ia-body .tbl td.urls a{text-decoration: none;font-size: 12rem;display: inline-block;border-bottom:transparent solid 1rem;line-height: 1.2;}
 .ia-body .tbl td.urls a:hover{text-decoration: underline;color: #000000;}
 .ia-body .tbl td.urls:hover .bt-copy{display: block;}
-.ia-body .tbl td.urls .bt-copy{display: none;width: 16rem;height: 16rem;border: 1rem solid #e3e3e3;background: #ffffff;position: absolute;right: 7rem;top: 50%;margin: -7rem 0rem 0rem 0rem;font-size: 0;line-height: 1;padding: 0;border-radius: 2rem;color: #444;}
+.ia-body .tbl td.urls .bt-copy{display: none;width: 16rem;height: 16rem;border: 1rem solid #e3e3e3;background: #ffffff;position: absolute;right: 7rem;top: 50%;margin: -8rem 0rem 0rem 0rem;font-size: 0;line-height: 1;padding: 0;border-radius: 2rem;color: #444;}
 .ia-body .tbl td.urls .bt-copy::before,
-.ia-body .tbl td.urls .bt-copy::after{width: 6rem;height: 6rem;border: #dddddd solid 1rem;border-radius: 2rem; content:"";position: absolute;left: 2rem;top: 2rem;background: #ffffff;}
+.ia-body .tbl td.urls .bt-copy::after{width: 6rem;height: 6rem;border: #a1a1a1 solid 1rem;border-radius: 2rem; content:"";position: absolute;left: 2rem;top: 2rem;background: #ffffff;}
 .ia-body .tbl td.urls .bt-copy::before{left: 4rem;top: 4rem;background: #f5f5f5;}
 .ia-body .tbl td.urls .bt-copy::after{}
 .ia-body .tbl td.urls.copyed{}
@@ -311,12 +311,12 @@ body::-webkit-scrollbar-thumb:hover{background-color:#ffffff;}
 .is-dark .ia-body .tbl tr.active td,
 .is-dark .tbl tbody tr.active{background-color: #253350;}
 .is-dark .ia-body .tbl th{color: #a0a0a0;background-color: #3a3a3a;border-color: #1b1b1b;}
-.is-dark .ia-body .tbl td{color: #d9d9d9;background-color: #2f2f2f;border-color: #1b1b1b; }
+.is-dark .ia-body .tbl td{color: #d9d9d9;background-color: #2f2f2f;border-color: #1b1b1b;}
 .is-dark .ia-body .tbl tr:hover td a:hover{}
 .is-dark .ia-body .tbl td.urls a:hover{color: #88b963;}
-.is-dark .ia-body .tbl td.urls .bt-copy{ border-color: #747474; background: #7c7c7c; }
+.is-dark .ia-body .tbl td.urls .bt-copy{border-color: #222222;background: #7c7c7c00;}
 .is-dark .ia-body .tbl td.urls .bt-copy::before,
-.is-dark .ia-body .tbl td.urls .bt-copy::after{ background: #a3a3a3; border-color: #1c1c1c; }
+.is-dark .ia-body .tbl td.urls .bt-copy::after{background: #707070;border-color: #1c1c1c;}
 .is-dark .ia-body .tbl td.urls.copyed::before{background: #484848;color: #d7d7d7;}
 .is-dark .ia-body .tbl td.memo{}
 .is-dark .ia-body .tbl .memo .bt-more:hover{}
