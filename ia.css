@@ -210,9 +210,17 @@ body.pc .ia-head .link>li.active .lk{background: #1065a5;}
 .ia-body .tbl td.numb{text-align: center;white-space: nowrap;font-family: "Consolas";}
 .ia-body .tbl td.code{min-width: 118rem;font-family: "Consolas";font-size: 12rem;}
 .ia-body .tbl td.levl{}
-.ia-body .tbl td.urls{min-width: 190rem;font-family: "Consolas";}
+.ia-body .tbl td.urls{min-width: 190rem;font-family: "Consolas";position: relative;}
 .ia-body .tbl td.urls a{text-decoration: none;font-size: 12rem;display: inline-block;border-bottom:transparent solid 1rem;line-height: 1.2;}
 .ia-body .tbl td.urls a:hover{text-decoration: underline;color: #000000;}
+.ia-body .tbl td.urls:hover .bt-copy{display: block;}
+.ia-body .tbl td.urls .bt-copy{display: none;width: 16rem;height: 16rem;border: 1rem solid #e3e3e3;background: #ffffff;position: absolute;right: 7rem;top: 50%;margin: -7rem 0rem 0rem 0rem;font-size: 0;line-height: 1;padding: 0;border-radius: 2rem;color: #444;}
+.ia-body .tbl td.urls .bt-copy::before,
+.ia-body .tbl td.urls .bt-copy::after{width: 6rem;height: 6rem;border: #dddddd solid 1rem;border-radius: 2rem; content:"";position: absolute;left: 2rem;top: 2rem;background: #ffffff;}
+.ia-body .tbl td.urls .bt-copy::before{left: 4rem;top: 4rem;background: #f5f5f5;}
+.ia-body .tbl td.urls .bt-copy::after{}
+.ia-body .tbl td.urls.copyed{}
+.ia-body .tbl td.urls.copyed::before{content:"File Name Copied!!";position: absolute;left: 0;top: 0;right: 0;bottom: 0;color: #666666;display: flex;align-items: center;justify-content: center;background: #ffffff;padding: 3rem 10rem;z-index: 1;}
 .ia-body .tbl td.date{white-space: nowrap;text-align: center;font-size: 12rem;font-family: "Consolas";}
 .ia-body .tbl td.stat{padding-left: 10rem;}
 .ia-body .tbl td.name{text-align: center; white-space: nowrap;}
@@ -306,6 +314,10 @@ body::-webkit-scrollbar-thumb:hover{background-color:#ffffff;}
 .is-dark .ia-body .tbl td{color: #d9d9d9;background-color: #2f2f2f;border-color: #1b1b1b; }
 .is-dark .ia-body .tbl tr:hover td a:hover{}
 .is-dark .ia-body .tbl td.urls a:hover{color: #88b963;}
+.is-dark .ia-body .tbl td.urls .bt-copy{ border-color: #747474; background: #7c7c7c; }
+.is-dark .ia-body .tbl td.urls .bt-copy::before,
+.is-dark .ia-body .tbl td.urls .bt-copy::after{ background: #a3a3a3; border-color: #1c1c1c; }
+.is-dark .ia-body .tbl td.urls.copyed::before{background: #484848;color: #d7d7d7;}
 .is-dark .ia-body .tbl td.memo{}
 .is-dark .ia-body .tbl .memo .bt-more:hover{}
 .is-dark .ia-body .tbl td.stat i{opacity: 0.8;color: #000;}
@@ -363,6 +375,7 @@ body::-webkit-scrollbar-thumb:hover{background-color:#ffffff;}
 	.ia-body .tbl tbody tr td.urls{display: inline-block; padding-left: 38rem;}
 	.is-dark .tbl tbody tr td.urls a{color: #7e9f6f;}
 	.ia-body .tbl tbody tr td.urls a{text-decoration: underline;}
+	.ia-body .tbl td.urls .bt-copy{display: none !important;}
 	.ia-body .tbl tbody tr td.stat{padding-left: 40rem;padding-right: 10rem;display: inline-block;}
 	.ia-body .tbl tbody tr td.date{display: inline-block;width: calc(100% / 3);min-width: 120rem;padding-left: 40rem;}
 	.ia-body .tbl tbody tr td.name{display: inline-block;}

@@ -21,3 +21,7 @@ stxt: { /* 상태값, class */
 
 <img src="./screenshot1.png" width="100%"> <br>
 <img src="./screenshot2.png" width="350">
+
+```
+live-server --port=9002 --host=localhost --ignorePattern=.*\.css
+```

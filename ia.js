@@ -60,24 +60,34 @@ const ia = {
             tbtr.forEach( tr => {
                 const stat = tr.querySelector("td.stat");
                 const name = tr.querySelector("td.name");
+                const urls = tr.querySelector("td.urls");
                 const txt = stat.innerText;
                 !txt ? stat.innerText = '대기':null;
                 !name.innerText && tr.classList.add("none");
                 !name.innerText ? name.innerText = "미지정" : null ;
                 tr.classList.add(ia.opts.stxt[txt]||'sty');
+                urls.insertAdjacentHTML("beforeend",'<button type=button class="bt-copy">Copy</button>');
                 // console.log( txt , !!name.innerText );
                 const link = tr.querySelector("td.urls a");
                 const href = link.getAttribute("href");
-                link.innerText =  href.includes("javascript:;") ? null : href.replace("../../html",".");
                 link.setAttribute("target","_blank");
+                link.innerText = href.includes("javascript:;") ? null : href.replace("../../html",".");
                 link.addEventListener("click", e => {
                     e.stopPropagation();
                     e.target.closest("tr").classList.add("active");
                 });
                 tr.addEventListener("click", e => {
-                    // e.stopPropagation();
                     e.target != tr.querySelector("button") ? tr.classList.toggle("active") : null ;
                 });
+                urls.querySelector(".bt-copy").addEventListener("click", bt => {
+                    const furl = link.innerText.split("/").reverse();
+                    navigator.clipboard.writeText(furl[1]+"/"+furl[0]);
+                    urls.classList.add("copyed");
+                    setTimeout(() => {
+                        urls.classList.remove("copyed");    
+                    }, 500);
+                });
+
                 /* td에 data-label 넣기 */
                 Object.keys(ia.opts.label).forEach( k => tr.querySelector("td."+k).setAttribute("data-label",ia.opts.label[k]) );
             });
