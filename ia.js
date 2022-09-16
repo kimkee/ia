@@ -1,5 +1,5 @@
 //*******************************************//
-// IA
+// IA - HTML Works List
 // 김기현 : kimkee@naver.com
 // update : 2022-09-01 ~
 //*******************************************//
@@ -38,7 +38,7 @@ const ia = {
             if( typeof obj == "object" ){
                 news = Object.assign(orgs,news);
             }
-            localStorage.setItem(name, JSON.stringify(news) );
+            localStorage.setItem( name, JSON.stringify(news) );
         },
         get: function(name,key){ // console.log(key);
             let data = JSON.parse( localStorage.getItem(name) ) || {};
@@ -72,27 +72,21 @@ const ia = {
                 const href = link.getAttribute("href");
                 link.setAttribute("target","_blank");
                 link.innerText = href.includes("javascript:;") ? null : href.replace("../../html",".");
-                link.addEventListener("click", e => {
-                    e.stopPropagation();
-                    e.target.closest("tr").classList.add("active");
+                link.addEventListener("click", bt => {
+                    bt.stopPropagation();
+                    bt.target.closest("tr").classList.add("active");
                 });
-                tr.addEventListener("click", e => {
-                    console.log(e.target.tagName , e.target != e.target.tagName != "BUTTON" );
-                    e.target.tagName != "BUTTON" ? tr.classList.toggle("active") : null ;
-                });
+                tr.addEventListener("click", e => tr.classList.toggle("active"));
                 urls.querySelector(".bt-copy").addEventListener("click", bt => {
+                    bt.stopPropagation();
                     const furl = link.innerText.split("/").reverse();
                     navigator.clipboard.writeText(furl[1]+"/"+furl[0]);
-                    urls.classList.add("copyed");
-                    setTimeout(() => {
-                        urls.classList.remove("copyed");    
-                    }, 500);
+                    urls.classList.add("copied");
+                    setTimeout( e => urls.classList.remove("copied"), 500);
                 });
-
                 /* td에 data-label 넣기 */
                 Object.keys(ia.opts.label).forEach( k => tr.querySelector("td."+k).setAttribute("data-label",ia.opts.label[k]) );
             });
-    
         }
     },
     mact: {
@@ -100,19 +94,17 @@ const ia = {
             this.set();
         },
         set:function(num){
-            let path = ia.plat();
-            // console.log(path);
+            let path = ia.plat(); // console.log(path);
             const liact = document.querySelector(".ia-head .link>li."+path);
             liact && liact.classList.add("active");
             ia.data.set("ia-"+path,{plat:path});
-            document.querySelector("body").classList.add(path);           
+            document.querySelector("body").classList.add(path);
             num = ia.data.get("ia-"+path,"menu") ;
             if( num == 0 ) {
                 ia.veiwall.set("open");
             } else {
                 ia.veiwall.set("close");
-                if( !num ) {num = 1;} 
-                ia.menu.act(num);
+                ia.menu.act(num||1);
             }
         }
     },
@@ -160,7 +152,7 @@ const ia = {
             const bcls = document.querySelector("body").classList;
             const bthm = document.querySelector(".fixnav .bt.them");
             const tclr = document.querySelector('[name="theme-color"]');
-            type = !type ? "dark" : type; 
+            type = !type ? "dark" : type;
             bthm.innerText = type == "dark" ? "🌚" : "🌞";
             type == "dark" && bcls.add("is-dark");    tclr.setAttribute("content","#212121");
             type == "light"&& bcls.remove("is-dark"); tclr.setAttribute("content","#ffffff");
@@ -274,7 +266,7 @@ const ia = {
             ia.data.set("ia-"+ia.plat(), {stat: opt2});
             this.filt(opt1, opt2);
         },
-        filt: function(opt1,opt2){
+        filt: function(opt1,opt2){ // console.log("ia.usr.filt()");
             document.querySelectorAll(".ia-body table.tbl tbody tr").forEach( tr => {
                 const tname = tr.querySelector("td.name");
                 const tstat = tr.querySelector("td.stat");
@@ -288,7 +280,6 @@ const ia = {
                 opt1 == "all" && opt2 == "all" ? tr.style.display = "table-row" : null ;
             });
             ia.total.set();
-            // console.log("ia.usr.filt()");
         }
     },
     menu: {
@@ -305,8 +296,7 @@ const ia = {
             document.querySelectorAll(".navs .menu>li .bt").forEach( (bt,i) => bt.addEventListener("click", a => this.act( i+1 ) ) );
             document.querySelector(".fixs .selt").addEventListener("change", sel => this.act(sel.target.value) );
         },
-        act: function(idx){
-            // console.log(idx);
+        act: function(idx){ // console.log(idx);
             document.querySelector(".ia-body").classList.remove("all");
             document.querySelectorAll(".navs .menu>li").forEach( (li,i) => {
                 idx == i+1 ? li.classList.add("active") : li.classList.remove("active");
@@ -341,6 +331,7 @@ const ia = {
         },
         evt: function(){
             document.querySelectorAll("table.tbl td.memo .bt-more").forEach( el => el.addEventListener("click", bt => {
+                bt.stopPropagation();
                 const td = bt.target.closest("td").classList;
                 td.contains("open") ? td.remove("open") : td.add("open");
             }));
@@ -420,8 +411,7 @@ const ia = {
                 const opt = JSON.parse(els.getAttribute("data-include-opt")) || {};
                 const obj = {};
                 Object.keys(opt).forEach( k => obj[k.trim()] = opt[k].trim() );
-                this.fetch = fetch(url)
-                .then( res => res.ok && res.text() ).then( res => { 
+                this.fetch = fetch(url).then( res => res.ok && res.text() ).then( res => { 
                     cout++;
                     els.innerHTML = res;
                     const elc = els.firstElementChild;
@@ -447,11 +437,6 @@ const ia = {
             typeof this.loadCallback == "function" && this.loadCallback();
         }
     },
-    appendHtml: function(sel,str){
-        let div = document.createElement(sel.tagName);
-        div.innerHTML = str;
-        while (div.children.length > 0) { sel.appendChild( div.children[0] ); }
-    }
 };
 ia.loading.show();
 ia.include.set();
@@ -476,9 +461,8 @@ const setData = e =>{
             const memo = [];
             tr.querySelectorAll("td.memo p").forEach( p => memo.push(p.innerText) );
             data[idx].page[i] = {
-                "numb": i +1, "lev2": lev2, "lev3": lev3, "lev4": lev4, "lev5": lev5,
-                "tits": tits, "code": code, "date": date,
-                "stat": stat, "name": name, "urls": urls, "memo": memo,
+                "numb": i +1, "lev2": lev2, "lev3": lev3, "lev4": lev4, "lev5": lev5, "tits": tits, 
+                "code": code, "date": date, "stat": stat, "name": name, "urls": urls, "memo": memo,
             };
         });
         // console.log(data[idx].lev1);
