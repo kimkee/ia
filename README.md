@@ -24,4 +24,5 @@ stxt: { /* 상태값, class */
 
 ```
 live-server --port=9002 --host=localhost --ignorePattern=.*\.css
+cd /
 ```
