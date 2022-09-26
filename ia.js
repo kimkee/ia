@@ -66,8 +66,7 @@ const ia = {
                 !name.innerText && tr.classList.add("none");
                 !name.innerText ? name.innerText = "미지정" : null ;
                 tr.classList.add(ia.opts.stxt[txt]||'sty');
-                urls.insertAdjacentHTML("beforeend",'<button type=button class="bt-copy">Copy</button>');
-                // console.log( txt , !!name.innerText );
+                urls.insertAdjacentHTML("beforeend",'<button type=button class="bt-copy"><i>Copy</i></button>');
                 const link = tr.querySelector("td.urls a");
                 const href = link.getAttribute("href");
                 link.setAttribute("target","_blank");
