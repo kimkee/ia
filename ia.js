@@ -1,9 +1,11 @@
-//*******************************************//
-// IA - HTML Works List
-// 김기현 : kimkee@naver.com
-// update : 2022-09-01 ~
-//*******************************************//
-
+/**
+ * @IA - HTML Works List
+ * @link https://github.com/kimkee/ia/
+ * @author 김기현  <kimkee7@gmail.com>
+ * @version 1.0.0
+ * @update 2022-09-01
+ * @licence MIT
+ */
 const ia = {
     init: function(){
         this.stats.init();
@@ -471,3 +473,6 @@ const setData = e =>{
     console.log(data);
     ia.data.set("ia-data",data);
 };
+document.querySelectorAll(".example a").forEach( a => {
+    console.log(  a.getAttribute("href") );
+});
