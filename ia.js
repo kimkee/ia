@@ -1,7 +1,7 @@
 /**
  * @IA - HTML Works List
  * @link https://github.com/kimkee/ia/
- * @author 김기현  <kimkee7@gmail.com>
+ * @author 김기현 KimKeeHyun <kimkee7@gmail.com>
  * @version 1.0.0
  * @update 2022-09-01
  * @licence MIT
