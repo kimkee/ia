@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="shortcut icon" href="#">
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
+    <title>Title</title>
+</head>
+
+<body>
+    <ul>
+        <li>상품 관리
+            <ul>
+                <li><a href="/basic/items">상품 관리 - 기본</a></li>
+            </ul>
+        </li>
+    </ul>
+    <div>
+        <button type="button" id="topButton">
+            <i>상단으로 이동</i>
+        </button>
+    </div>
+
+    <ul>
+        <li>
+          <input type="radio" id="a1" name="asd" value="mail" onclick="sendValue(this);" />
+          <label for="a1">
+            <span id="Mail">
+              mail@gmail.com
+            </span>
+          </label>
+        </li>
+        <li>
+          <input type="radio" id="a2" name="asd" value="phone" onclick="sendValue(this);" />
+          <label for="a2">
+            <span id="Phone">
+              010-0000-0000
+            </span>
+          </label>
+        </li>
+      </ul>
+
+<script>
+    let Mail = document.getElementById('Mail');
+    let Phone = document.getElementById('Phone');
+    Mail.innerText = Mail.innerText.toString().replace(new RegExp('.(?=.{0,' + 3 + '}@)', 'g'), '*');
+    Phone.innerText = Phone.innerText.replace(/(\d{4})|(\d{3})/gi,'****');
+</script>
+
+    <script>
+        const btn = document.getElementById('topButton');
+        btn.addEventListener('click', (event) => {
+            alert("this button is clicked !");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+
+
+    </script>
+</body>
+
+</html>
