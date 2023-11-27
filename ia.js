@@ -466,7 +466,7 @@ const setData = e =>{
                 "code": code, "date": date, "stat": stat, "name": name, "urls": urls, "memo": memo,
             };
         });
-        // console.log(data[idx].lev1);
+        // console.log(data[idx].lev1); 
         // console.table(data[idx].page);
     });
     ia.init();
