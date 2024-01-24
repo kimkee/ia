@@ -124,10 +124,10 @@ const ia = {
             const hdHeight = document.querySelector(".ia-head").offsetHeight  || 0;
             const nvHeight = document.querySelector(".ia-body .navs").offsetHeight || 0;
             // console.log(hdHeight , nvHeight);
-            document.querySelector(".ia-wrap").style.paddingTop = hdHeight+"rem";
-            document.querySelector(".ia-body").style.paddingTop = nvHeight+"rem";
-            document.querySelector(".ia-body .fixs").style.top = hdHeight+nvHeight+"rem";
-            document.querySelector(".ia-body .navs").style.top = hdHeight+"rem";
+            document.querySelector(".ia-wrap").style.paddingTop = hdHeight+"px";
+            document.querySelector(".ia-body").style.paddingTop = nvHeight+"px";
+            document.querySelector(".ia-body .fixs").style.top = hdHeight+nvHeight+"px";
+            document.querySelector(".ia-body .navs").style.top = hdHeight+"px";
         }
     },
     fixnav: {
