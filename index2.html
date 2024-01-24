@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>IA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="./favicon.ico" rel="shrtcut icon">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="theme-color" content="#212121">
+    <link rel="stylesheet" href="./ia.css?v=1">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+	<script>
+		function exportToExcel(id) {
+			// Select the table element
+			const table = document.getElementById(id);
+			
+			// Convert the table to a worksheet
+			const ws = XLSX.utils.table_to_sheet(table);
+			
+			// Create a workbook with a single sheet
+			const wb = XLSX.utils.book_new();
+			XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+			
+			// Save the workbook as an Excel file
+			XLSX.writeFile(wb, id+'table_data.xlsx');
+		}
+	</script>
+</head>
+<body>
+    <div class="ia-wrap">
+        
+		<button type="button" class="btnDownload" onclick="exportToExcel('dataTable')">엑셀로 다운로드 받기</button>
+        <table class="tbl" cellspacing="0" cellpadding="0" id="dataTable">
+			<caption>메인/공통/기타</caption>
+			<thead>
+				<tr>
+					<th class="numb">No</th>
+					<th class="lev2">L2</th>
+					<th class="lev3">L3</th>
+					<th class="lev4">L4</th>
+					<th class="lev5">L5</th>
+					<th class="tits">화면명</th>
+					<th class="code">화면ID</th>
+					<th class="urls">URL</th>
+					<th class="date">날짜</th>
+					<th class="stat">상태</th>
+					<th class="name">퍼블</th>
+				</tr>
+			</thead>
+			<tbody trnum="22">
+				<tr class="com">
+					<td class="numb" data-label="No">1</td>
+					<td class="lev2" data-label="Lv.2">가이드</td>
+					<td class="lev3" data-label="Lv.3"></td>
+					<td class="lev4" data-label="Lv.4"></td>
+					<td class="lev5" data-label="Lv.5"></td>
+					<td class="tits" data-label="화면">공통 UI</td>
+					<td class="code" data-label="ID">ME010001</td>
+					<td class="urls" data-label="파일"><a href="../../html/guide/ui.html" target="_blank">./guide/ui.html</a></td>
+					<td class="date" data-label="날짜">2022-12-31</td>
+					<td class="stat" data-label="상태">완료</td>
+					<td class="name" data-label="담당">김기현</td>
+				</tr>
+				<tr class="com">
+					<td class="numb" data-label="No">1</td>
+					<td class="lev2" data-label="Lv.2">가이드</td>
+					<td class="lev3" data-label="Lv.3"></td>
+					<td class="lev4" data-label="Lv.4"></td>
+					<td class="lev5" data-label="Lv.5"></td>
+					<td class="tits" data-label="화면">공통 UI</td>
+					<td class="code" data-label="ID">ME010001</td>
+					<td class="urls" data-label="파일"><a href="../../html/guide/ui.html" target="_blank">./guide/ui.html</a></td>
+					<td class="date" data-label="날짜">2022-12-31</td>
+					<td class="stat" data-label="상태">완료</td>
+					<td class="name" data-label="담당">김기현</td>
+				</tr>
+				<tr class="com">
+					<td class="numb" data-label="No">1</td>
+					<td class="lev2" data-label="Lv.2">가이드</td>
+					<td class="lev3" data-label="Lv.3"></td>
+					<td class="lev4" data-label="Lv.4"></td>
+					<td class="lev5" data-label="Lv.5"></td>
+					<td class="tits" data-label="화면">공통 UI</td>
+					<td class="code" data-label="ID">ME010001</td>
+					<td class="urls" data-label="파일"><a href="../../html/guide/ui.html" target="_blank">./guide/ui.html</a></td>
+					<td class="date" data-label="날짜">2022-12-31</td>
+					<td class="stat" data-label="상태">완료</td>
+					<td class="name" data-label="담당">김기현</td>
+				</tr>
+				<tr class="com">
+					<td class="numb" data-label="No">1</td>
+					<td class="lev2" data-label="Lv.2">가이드</td>
+					<td class="lev3" data-label="Lv.3"></td>
+					<td class="lev4" data-label="Lv.4"></td>
+					<td class="lev5" data-label="Lv.5"></td>
+					<td class="tits" data-label="화면">공통 UI</td>
+					<td class="code" data-label="ID">ME010001</td>
+					<td class="urls" data-label="파일"><a href="../../html/guide/ui.html" target="_blank">./guide/ui.html</a></td>
+					<td class="date" data-label="날짜">2022-12-31</td>
+					<td class="stat" data-label="상태">완료</td>
+					<td class="name" data-label="담당">김기현</td>
+				</tr>
+			</tbody>
+		</table>
+
+    </div>
+     
+</body>
+</html>

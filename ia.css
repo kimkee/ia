@@ -85,6 +85,7 @@ caption{display:none;}
 .ia-head .info>li{margin: 2rem 4rem 2rem 0rem !important;}
 .ia-head .info select{margin-left: 0rem;}
 
+.btnDownload{color: #a7a7a7;border: 1px solid #7373738c;border-radius: 4rem;font-size: 11rem;padding: 4rem 5rem;/* position: absolute; *//* right: 0rem; *//* top: 12rem; */z-index: 10;}
 
 body.static .ia-head{background-color: #2453b3;}
 body.static .ia-head{background-color: #2453b3;}
@@ -137,7 +138,7 @@ body.pc .ia-head .link>li.active .lk{background: #1065a5;}
 .ia-body.all .list>li{display: block;}
 .ia-body.all .navs .menu{display: none;}
 
-.ia-body .list{ padding-top: 4rem; }
+.ia-body .list{padding-top: 4rem;z-index: 10;position: relative;}
 .ia-body .list>dt.active{justify-content: left;}
 .ia-body .list>dt.active .bt{font-weight: 500;}
 .ia-body .list>dt.active .bt::before{content:"";display: block;position: absolute;left: -1rem;top: -1rem;right: -1rem;height: 2rem;}

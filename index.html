@@ -8,6 +8,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="theme-color" content="#212121">
     <link rel="stylesheet" href="./ia.css?v=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script>
+		function exportToExcel(id,name) {
+			// Select the table element
+			const table = document.getElementById(id);
+			
+			// Convert the table to a worksheet
+			const ws = XLSX.utils.table_to_sheet(table);
+			
+			// Create a workbook with a single sheet
+			const wb = XLSX.utils.book_new();
+			XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+			
+			// Save the workbook as an Excel file
+			XLSX.writeFile(wb, name+'_data.xlsx');
+		}
+	</script>
 </head>
 <body>
     <div class="ia-wrap">
