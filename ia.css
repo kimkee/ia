@@ -85,7 +85,8 @@ caption{display:none;}
 .ia-head .info>li{margin: 2rem 4rem 2rem 0rem !important;}
 .ia-head .info select{margin-left: 0rem;}
 
-.btnDownload{color: #4CAF50;/* border: 1px solid #7373738c; */border-radius: 4rem;font-size: 11rem;padding: 4rem 5rem;position: absolute;right: 5rem;top: 7rem;z-index: 10;}
+.btnDownload{color: #539b56;border-radius: 4rem;font-size: 11rem;padding: 3rem 4rem;position: absolute;right: 5rem;top: 8rem;z-index: 10;}
+.ia-body.all .btnDownload{border: 1px solid #b9b9b959;top: 10rem;right: 0rem;}
 
 body.static .ia-head{background-color: #2453b3;}
 body.static .ia-head{background-color: #2453b3;}
