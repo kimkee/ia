@@ -153,7 +153,7 @@ const ia = {
             const bcls = document.querySelector("body").classList;
             const bthm = document.querySelector(".fixnav .bt.them");
             const tclr = document.querySelector('[name="theme-color"]');
-            type = !type ? "dark" : type;
+            type = !type ? "light" : type;
             bthm.innerText = type == "dark" ? "🌚" : "🌞";
             type == "dark" && bcls.add("is-dark");    tclr.setAttribute("content","#212121");
             type == "light"&& bcls.remove("is-dark"); tclr.setAttribute("content","#ffffff");
